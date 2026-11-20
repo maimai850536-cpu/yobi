@@ -347,12 +347,13 @@
           </div>
           <div id="chat-kpi-month-rev" class="text-xl sm:text-2xl font-bold tabular-nums mt-1.5">$0</div>
         </div>
-        <div class="journal-card bg-[#FFF1EE] p-3.5 flex flex-col justify-between">
-          <div class="text-xs text-[#8C7A6B] flex items-center gap-1 whitespace-nowrap">
-            <i data-lucide="receipt" class="w-3.5 h-3.5 text-rose-500 shrink-0"></i><span>本商店總支出</span>
+        <button type="button" id="jump-store-expense-btn" class="journal-card bg-[#FFF1EE] hover:bg-[#ffe5e0] p-3.5 flex flex-col justify-between text-left transition cursor-pointer" title="點擊查看與管理進貨支出明細">
+          <div class="text-xs text-[#8C7A6B] flex items-center justify-between gap-1 whitespace-nowrap w-full">
+            <span class="flex items-center gap-1"><i data-lucide="receipt" class="w-3.5 h-3.5 text-rose-500 shrink-0"></i><span>本商店總支出</span></span>
+            <span class="text-[10px] text-rose-500">明細›</span>
           </div>
           <div id="chat-kpi-store-expense" class="text-xl sm:text-2xl font-bold tabular-nums text-rose-700 mt-1.5">$0</div>
-        </div>
+        </button>
         <div class="journal-card bg-[#F3EEFF] p-3.5 col-span-2 sm:col-span-1 flex flex-col justify-between">
           <div class="text-xs text-[#8C7A6B] flex items-center gap-1 whitespace-nowrap">
             <i data-lucide="coins" class="w-3.5 h-3.5 text-violet-600 shrink-0"></i><span>本商店總收益</span>
@@ -389,22 +390,19 @@
 
         <!-- Quick Prompts -->
         <div class="mb-3">
-          <div class="text-xs text-[#8C7A6B] mb-1.5">點一下試試這樣跟小yo說：</div>
+          <div class="text-xs text-[#8C7A6B] mb-1.5">點一下直接套用格式跟小yo說：</div>
           <div class="flex flex-wrap gap-1.5">
-            <button class="quick-prompt-btn bg-[#FFF8D6] hover:bg-[#FFE680] border border-[#4A3B32] rounded-full px-3 py-1 text-xs font-bold transition" data-prompt="今天賣出三隻豆包史努比！">
-              「今天賣出三隻豆包史努比！」
+            <button type="button" class="quick-fill-btn bg-[#FFF8D6] hover:bg-[#FFE680] border border-[#4A3B32] rounded-full px-3 py-1 text-xs font-bold transition" data-fill="商品賣出兩組">
+              「XXX商品賣出兩組」
             </button>
-            <button class="quick-prompt-btn bg-[#EEF7FF] hover:bg-[#CBE8FF] border border-[#4A3B32] rounded-full px-3 py-1 text-xs font-bold transition" data-prompt="賣出 2 個草莓奶油小熊吊飾">
-              「賣出 2 個草莓奶油小熊吊飾」
+            <button type="button" class="quick-fill-btn bg-[#FFF1EE] hover:bg-[#FFD0C7] border border-[#4A3B32] rounded-full px-3 py-1 text-xs font-bold transition" data-fill="進貨5個商品">
+              「進貨幾個XXX商品」
             </button>
-            <button class="quick-prompt-btn bg-[#FFF1EE] hover:bg-[#FFD0C7] border border-[#4A3B32] rounded-full px-3 py-1 text-xs font-bold transition" data-prompt="進貨 5 組奶油小熊手帳貼紙組">
-              「進貨 5 組奶油小熊手帳貼紙組」
+            <button type="button" class="quick-prompt-btn bg-[#EEF7FF] hover:bg-[#CBE8FF] border border-[#4A3B32] rounded-full px-3 py-1 text-xs font-bold transition" data-prompt="清零今日業績">
+              「清零今日業績」
             </button>
-            <button class="quick-prompt-btn bg-[#E8F9F0] hover:bg-[#B8EBD0] border border-[#4A3B32] rounded-full px-3 py-1 text-xs font-bold transition" data-prompt="查一下本月盈利狀況">
-              「查一下本月盈利狀況」
-            </button>
-            <button class="quick-prompt-btn bg-[#F3EEFF] hover:bg-[#E5D9FF] border border-[#4A3B32] rounded-full px-3 py-1 text-xs font-bold transition" data-prompt="今天豆包史努比在Threads上很熱銷，IG也成功上架新產品！">
-              「Threads熱銷＋IG上新紀錄」
+            <button type="button" class="quick-fill-btn bg-[#F3EEFF] hover:bg-[#E5D9FF] border border-[#4A3B32] rounded-full px-3 py-1 text-xs font-bold transition" data-fill="增加今日備注：">
+              「增加今日備注：」
             </button>
           </div>
         </div>
@@ -541,6 +539,28 @@
           <!-- Sales rows rendered here -->
         </div>
       </div>
+
+      <!-- Store Restock Expenses Ledger -->
+      <div id="store-expense-section" class="journal-card p-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold">本商店進貨支出明細</h3>
+            <p class="text-xs text-[#8C7A6B]">可隨時登記進貨、刪除單筆支出，或清空歸零</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="clear-restocks-btn" type="button" class="px-3 py-1.5 rounded-xl border-2 border-[#E6DCCB] hover:border-rose-400 text-xs font-bold text-rose-700 whitespace-nowrap">
+              清空支出
+            </button>
+            <button id="open-restock-modal-btn" type="button" class="journal-btn bg-[#FFD0C7] hover:bg-[#ffbfb3] px-3.5 py-1.5 text-xs font-bold flex items-center gap-1 whitespace-nowrap">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>登記進貨</span>
+            </button>
+          </div>
+        </div>
+        <div id="restocks-ledger-list" class="space-y-2.5">
+          <!-- Restock rows rendered here -->
+        </div>
+      </div>
     </section>
 
 
@@ -548,7 +568,7 @@
     <!-- Footer -->
     <footer class="mt-10 text-center text-xs text-[#8C7A6B] flex flex-wrap items-center justify-center gap-4">
       <span>資料自動儲存在本機瀏覽器中</span>
-      <button id="reset-demo-btn" class="underline hover:text-[#4A3B32]">恢復預設範例手帳資料</button>
+      <button id="open-manual-today-btn" type="button" class="underline hover:text-[#4A3B32]">手動改今日帳</button>
     </footer>
   </main>
 
@@ -643,8 +663,19 @@
           </div>
         </div>
         <div>
-          <label class="block text-xs font-bold mb-1">進貨日期時間 *</label>
-          <input id="rm-date" type="datetime-local" required class="w-full bg-[#FDFBF7] border-2 border-[#E6DCCB] focus:border-[#4A3B32] rounded-xl px-3 py-2 text-sm focus:outline-none" />
+          <label class="block text-xs font-bold mb-1">進貨日期與時間 *</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="rm-open-cal-btn" type="button" class="w-full bg-[#FFF8D6] hover:bg-[#FFE680] border-2 border-[#4A3B32] rounded-xl px-2.5 py-2 text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 tabular-nums">
+              <i data-lucide="calendar" class="w-4 h-4 shrink-0"></i>
+              <span id="rm-date-display">2026/11/20</span>
+            </button>
+            <input id="rm-date-value" type="hidden" />
+            <div class="flex items-center gap-1 bg-[#FDFBF7] border-2 border-[#E6DCCB] rounded-xl px-2 py-1.5">
+              <select id="rm-hour" class="flex-1 bg-transparent text-xs sm:text-sm font-bold text-center focus:outline-none tabular-nums"></select>
+              <span class="font-bold text-xs">:</span>
+              <select id="rm-min" class="flex-1 bg-transparent text-xs sm:text-sm font-bold text-center focus:outline-none tabular-nums"></select>
+            </div>
+          </div>
         </div>
         <div>
           <label class="block text-xs font-bold mb-1">備註 (選填)</label>
@@ -700,7 +731,7 @@
   </div>
 
   <!-- Modal: 手帳日曆回顧 -->
-  <div id="calendar-modal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
+  <div id="calendar-modal" class="fixed inset-0 z-[60] hidden modal-backdrop flex items-center justify-center p-4">
     <div class="journal-card w-full max-w-sm p-5 bg-[#FDFBF7]">
       <div class="washi-tape"></div>
       <div class="flex items-center justify-between mb-3">
@@ -734,6 +765,91 @@
     </div>
   </div>
 
+  <!-- Modal: 手動改今日帳 -->
+  <div id="manual-today-modal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
+    <div class="journal-card w-full max-w-md p-5">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-lg font-bold">手動改今日帳 (<span id="mt-date-label"></span>)</h3>
+        <button id="close-manual-today-modal" class="p-1 rounded-lg hover:bg-[#FFF8D6]">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form id="manual-today-form" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold mb-1">調整類型</label>
+          <select id="mt-type" class="w-full bg-[#FDFBF7] border-2 border-[#E6DCCB] focus:border-[#4A3B32] rounded-xl px-3 py-2 text-sm focus:outline-none">
+            <option value="sale">補記／新增一筆今日售出</option>
+            <option value="restock">補記／新增一筆今日進貨支出</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1">項目／商品名稱 *</label>
+          <input id="mt-name" type="text" required placeholder="例如：豆包史努比 或 包材運費" class="w-full bg-[#FDFBF7] border-2 border-[#E6DCCB] focus:border-[#4A3B32] rounded-xl px-3 py-2 text-sm focus:outline-none" />
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-xs font-bold mb-1">數量 *</label>
+            <input id="mt-qty" type="number" min="1" value="1" required class="w-full bg-[#FDFBF7] border-2 border-[#E6DCCB] rounded-xl px-3 py-2 text-sm focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">進貨／成本 *</label>
+            <input id="mt-cost" type="number" min="0" value="0" required class="w-full bg-[#FDFBF7] border-2 border-[#E6DCCB] rounded-xl px-3 py-2 text-sm focus:outline-none" />
+          </div>
+          <div id="mt-price-wrap">
+            <label class="block text-xs font-bold mb-1">單件售價 *</label>
+            <input id="mt-price" type="number" min="0" value="0" class="w-full bg-[#FDFBF7] border-2 border-[#E6DCCB] rounded-xl px-3 py-2 text-sm focus:outline-none" />
+          </div>
+        </div>
+        <div class="flex items-center justify-between pt-2">
+          <button id="mt-clear-today-btn" type="button" class="px-3 py-2 rounded-xl border-2 border-[#FFD0C7] text-xs font-bold text-rose-700 hover:bg-[#FFF1EE]">
+            清零今日售出
+          </button>
+          <div class="flex gap-2">
+            <button type="button" id="cancel-manual-today-modal" class="px-4 py-2 rounded-xl border-2 border-[#E6DCCB] text-sm font-bold">取消</button>
+            <button type="submit" class="journal-btn bg-[#FFE680] px-4 py-2 text-sm font-bold">儲存入帳</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: 修改單筆進貨支出 -->
+  <div id="edit-restock-modal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
+    <div class="journal-card w-full max-w-sm p-5">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-base font-bold">修改進貨支出明細</h3>
+        <button id="close-edit-restock-modal" class="p-1 rounded-lg hover:bg-[#FFF8D6]">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form id="edit-restock-form" class="space-y-3">
+        <input type="hidden" id="er-id" />
+        <div>
+          <label class="block text-xs font-bold mb-1">品項名稱 *</label>
+          <input id="er-name" type="text" required class="w-full bg-[#FDFBF7] border-2 border-[#E6DCCB] rounded-xl px-3 py-2 text-sm focus:outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">數量 *</label>
+            <input id="er-qty" type="number" min="1" required class="w-full bg-[#FDFBF7] border-2 border-[#E6DCCB] rounded-xl px-3 py-2 text-sm focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">單件進貨價 *</label>
+            <input id="er-cost" type="number" min="0" required class="w-full bg-[#FDFBF7] border-2 border-[#E6DCCB] rounded-xl px-3 py-2 text-sm focus:outline-none" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1">備註</label>
+          <input id="er-note" type="text" class="w-full bg-[#FDFBF7] border-2 border-[#E6DCCB] rounded-xl px-3 py-2 text-sm focus:outline-none" />
+        </div>
+        <div class="flex justify-end gap-2 pt-1">
+          <button type="button" id="cancel-edit-restock-modal" class="px-4 py-2 rounded-xl border-2 border-[#E6DCCB] text-sm font-bold">取消</button>
+          <button type="submit" class="journal-btn bg-[#B8EBD0] px-4 py-2 text-sm font-bold">儲存修改</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Modal: 刪除商品確認 -->
   <div id="delete-product-modal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
     <div class="journal-card w-full max-w-sm p-5">
@@ -763,7 +879,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'mai_huo_xiao_yo_v1';
+    const STORAGE_KEY = 'mai_huo_xiao_yo_v2';
 
     const DEFAULT_IMAGES = {
       snoopy: 'data:image/jpeg;base64,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',
@@ -796,127 +912,18 @@
       const m = String(now.getMonth() + 1).padStart(2, '0');
       const todayStr = getTodayISO();
 
-      const dayOffset = (dNum, timeStr) => `${y}-${m}-${String(Math.min(dNum, now.getDate())).padStart(2, '0')}T${timeStr}`;
-
       return {
         selectedMonth: `${y}-${m}`,
         selectedDate: todayStr,
         storeLogo: DEFAULT_IMAGES.xiaoyo,
-        dailyNotes: {
-          [todayStr]: ['今天在Threads上分享的豆包史努比反應超好～IG也順利上架新品了！']
-        },
-        products: [
-          {
-            id: 'p1',
-            name: '豆包史努比',
-            costPrice: 220,
-            sellPrice: 450,
-            stock: 12,
-            lowStockThreshold: 3,
-            unit: '隻',
-            image: DEFAULT_IMAGES.snoopy
-          },
-          {
-            id: 'p2',
-            name: '草莓奶油小熊吊飾',
-            costPrice: 95,
-            sellPrice: 220,
-            stock: 8,
-            lowStockThreshold: 3,
-            unit: '個',
-            image: DEFAULT_IMAGES.strawberry
-          },
-          {
-            id: 'p3',
-            name: '奶油小熊手帳貼紙組',
-            costPrice: 45,
-            sellPrice: 120,
-            stock: 3,
-            lowStockThreshold: 3,
-            unit: '組',
-            image: DEFAULT_IMAGES.stickers
-          }
-        ],
-        sales: [
-          {
-            id: 's1',
-            productId: 'p1',
-            productName: '豆包史努比',
-            qty: 2,
-            unitCost: 220,
-            unitPrice: 450,
-            saleTime: dayOffset(Math.max(1, now.getDate() - 5), '14:20')
-          },
-          {
-            id: 's2',
-            productId: 'p2',
-            productName: '草莓奶油小熊吊飾',
-            qty: 3,
-            unitCost: 95,
-            unitPrice: 220,
-            saleTime: dayOffset(Math.max(1, now.getDate() - 4), '19:05')
-          },
-          {
-            id: 's3',
-            productId: 'p3',
-            productName: '奶油小熊手帳貼紙組',
-            qty: 5,
-            unitCost: 45,
-            unitPrice: 120,
-            saleTime: dayOffset(Math.max(1, now.getDate() - 2), '11:30')
-          },
-          {
-            id: 's4',
-            productId: 'p1',
-            productName: '豆包史努比',
-            qty: 1,
-            unitCost: 220,
-            unitPrice: 450,
-            saleTime: dayOffset(Math.max(1, now.getDate() - 1), '20:15')
-          },
-          {
-            id: 's5',
-            productId: 'p3',
-            productName: '奶油小熊手帳貼紙組',
-            qty: 2,
-            unitCost: 45,
-            unitPrice: 120,
-            saleTime: `${todayStr}T10:30`
-          }
-        ],
-        restocks: [
-          {
-            id: 'r1',
-            productId: 'p1',
-            productName: '豆包史努比',
-            qty: 15,
-            unitCost: 220,
-            restockTime: dayOffset(Math.max(1, now.getDate() - 10), '10:00'),
-            note: '11月首批進貨'
-          },
-          {
-            id: 'r2',
-            productId: 'p2',
-            productName: '草莓奶油小熊吊飾',
-            qty: 13,
-            unitCost: 95,
-            restockTime: dayOffset(Math.max(1, now.getDate() - 8), '15:40'),
-            note: '熱銷補貨'
-          },
-          {
-            id: 'r3',
-            productId: 'p3',
-            productName: '奶油小熊手帳貼紙組',
-            qty: 10,
-            unitCost: 45,
-            restockTime: dayOffset(Math.max(1, now.getDate() - 6), '11:20'),
-            note: '文創市集備貨'
-          }
-        ],
+        dailyNotes: {},
+        products: [],
+        sales: [],
+        restocks: [],
         chatHistory: [
           {
             role: 'assistant',
-            text: '哈囉！我是你的記帳小助手「小yo」🐶✨\n你可以直接跟我說賣出了什麼，或是點下方的範例句試試看！\n例如：「今天賣出三隻豆包史努比！」',
+            text: '哈囉！我是你的記帳小助手「小yo」🐶✨\n你可以先點右上角「＋ 新增商品」建立自己的商品，再直接跟我說「XXX商品賣出兩組」、「進貨幾個XXX商品」、「清零今日業績」或「增加今日備注：...」喔！',
             time: '剛剛'
           }
         ]
@@ -926,6 +933,7 @@
     let state = loadState();
     if (!state.selectedDate) state.selectedDate = getTodayISO();
     let calendarViewMonth = state.selectedMonth || state.selectedDate.slice(0, 7);
+    let calendarTargetMode = 'main';
     let profitChart = null;
     let activeTab = 'chat';
     let modalTempImage = '';
@@ -1069,8 +1077,32 @@
       let replyText = '';
       let receiptCard = null;
 
-      // Check if query about monthly profit
-      if (/(查|看|多少|狀況|盈利|賺|報表)/.test(text) && !/(賣出|售出|賣掉|出貨|進貨|補貨)/.test(text)) {
+      const activeDate = state.selectedDate || getTodayISO();
+
+      // 1. 清零今日業績
+      if (/^(清零|清空|重置).*(今日|當天|今天).*(業績|銷售|營業額|盈利)/.test(text) || /清零今日業績/.test(text)) {
+        const toRemove = state.sales.filter(s => s.saleTime.startsWith(activeDate));
+        toRemove.forEach(s => {
+          const prod = state.products.find(p => p.id === s.productId);
+          if (prod) prod.stock += s.qty;
+        });
+        state.sales = state.sales.filter(s => !s.saleTime.startsWith(activeDate));
+        replyText = `好喔！已經幫你把 ${activeDate} 的今日業績清零囉（共移除 ${toRemove.length} 筆售出並加回庫存）✨`;
+        showToast(`已清零 ${activeDate} 業績！`);
+      // 2. 增加今日備注：...
+      } else if (/^(?:增加)?(?:今日|當天)?備[注註][:：]?\s*/.test(text)) {
+        const noteBody = text.replace(/^(?:增加)?(?:今日|當天)?備[注註][:：]?\s*/, '').trim();
+        if (!noteBody) {
+          replyText = '請在「增加今日備注：」後面加上你想記錄的內容喔！🐶';
+        } else {
+          if (!state.dailyNotes) state.dailyNotes = {};
+          if (!state.dailyNotes[activeDate]) state.dailyNotes[activeDate] = [];
+          state.dailyNotes[activeDate].push(noteBody);
+          replyText = `收到！小yo已經幫你把這則備注寫進 ${activeDate} 的「📷 拍立得快照」裡囉：\n「${noteBody}」✨`;
+          showToast('已增加今日備注到拍立得快照！');
+        }
+      // 3. Check if query about monthly profit
+      } else if (/(查|看|多少|狀況|盈利|賺|報表)/.test(text) && !/(賣出|售出|賣掉|出貨|進貨|補貨)/.test(text)) {
         const m = getMonthMetrics(state.selectedMonth);
         const t = getTodayMetrics();
         const st = getStoreTotals();
@@ -1099,7 +1131,7 @@
           const customCostMatch = text.match(/(?:進貨價|成本|單價)\s*(\d+)/);
           const unitCost = customCostMatch ? parseInt(customCostMatch[1], 10) : product.costPrice;
 
-          let restockTime = getNowDateTimeLocal();
+          let restockTime = `${activeDate}T${nowTime}`;
           if (/昨天|昨日/.test(text)) {
             const d = new Date();
             d.setDate(d.getDate() - 1);
@@ -1140,7 +1172,7 @@
           showToast('已記錄到今日店舖快照！');
         } else if (isSale || product) {
           const qty = parseChineseQty(text);
-          let saleTime = getNowDateTimeLocal();
+          let saleTime = `${activeDate}T${nowTime}`;
           if (/昨天|昨日/.test(text)) {
             const d = new Date();
             d.setDate(d.getDate() - 1);
@@ -1489,11 +1521,48 @@
     }
 
 
+    function renderRestocksList() {
+      const listEl = document.getElementById('restocks-ledger-list');
+      if (!listEl) return;
+      const items = state.restocks.slice().sort((a, b) => b.restockTime.localeCompare(a.restockTime));
+      if (items.length === 0) {
+        listEl.innerHTML = `<div class="text-center py-6 text-sm text-[#8C7A6B]">目前沒有進貨支出紀錄（點右上角「＋ 登記進貨」或到商品卡片點「補貨」即可新增）</div>`;
+        return;
+      }
+      listEl.innerHTML = items.map(r => {
+        const prod = state.products.find(p => p.id === r.productId);
+        const img = prod ? prod.image : DEFAULT_IMAGES.snoopy;
+        const total = r.unitCost * r.qty;
+        return `
+          <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 bg-[#FDFBF7] border-2 border-[#E6DCCB] rounded-2xl p-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <img src="${img}" alt="${r.productName}" class="w-11 h-11 rounded-xl object-cover border border-[#4A3B32] bg-white shrink-0" />
+              <div class="min-w-0">
+                <div class="font-bold text-sm">${r.productName} × ${r.qty}</div>
+                <div class="text-xs text-[#8C7A6B]">進貨時間：${r.restockTime.replace('T', ' ')}</div>
+                <div class="text-xs text-[#8C7A6B]">單件進貨價 ${fmtMoney(r.unitCost)} ${r.note ? `・${r.note}` : ''}</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 ml-auto">
+              <div class="text-right font-bold text-rose-700 tabular-nums">-${fmtMoney(total)}</div>
+              <button data-edit-restock="${r.id}" class="px-2.5 py-1 rounded-xl border border-[#E6DCCB] hover:border-[#4A3B32] text-xs font-bold" title="修改支出">
+                修改
+              </button>
+              <button data-delete-restock="${r.id}" class="p-1.5 rounded-xl text-[#8C7A6B] hover:text-rose-600 hover:bg-[#FFF1EE]" title="刪除此筆支出">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
     function renderAll() {
       renderKPIs();
       renderChat();
       renderProducts();
       renderReports();
+      renderRestocksList();
       if (window.lucide) lucide.createIcons();
     }
 
@@ -1574,7 +1643,16 @@
     }
 
     document.getElementById('open-calendar-btn').addEventListener('click', () => {
+      calendarTargetMode = 'main';
       calendarViewMonth = state.selectedMonth || (state.selectedDate || getTodayISO()).slice(0, 7);
+      renderCalendar();
+      document.getElementById('calendar-modal').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    });
+    document.getElementById('rm-open-cal-btn').addEventListener('click', () => {
+      calendarTargetMode = 'restock';
+      const cur = document.getElementById('rm-date-value').value || getTodayISO();
+      calendarViewMonth = cur.slice(0, 7);
       renderCalendar();
       document.getElementById('calendar-modal').classList.remove('hidden');
       if (window.lucide) lucide.createIcons();
@@ -1595,13 +1673,25 @@
       renderCalendar();
     });
     document.getElementById('cal-today-btn').addEventListener('click', () => {
-      selectDate(getTodayISO());
+      const todayISO = getTodayISO();
+      if (calendarTargetMode === 'restock') {
+        document.getElementById('rm-date-value').value = todayISO;
+        document.getElementById('rm-date-display').textContent = todayISO.replace(/-/g, '/');
+      } else {
+        selectDate(todayISO);
+      }
       document.getElementById('calendar-modal').classList.add('hidden');
     });
     document.getElementById('calendar-grid').addEventListener('click', e => {
       const btn = e.target.closest('button[data-cal-date]');
       if (!btn) return;
-      selectDate(btn.dataset.calDate);
+      const picked = btn.dataset.calDate;
+      if (calendarTargetMode === 'restock') {
+        document.getElementById('rm-date-value').value = picked;
+        document.getElementById('rm-date-display').textContent = picked.replace(/-/g, '/');
+      } else {
+        selectDate(picked);
+      }
       document.getElementById('calendar-modal').classList.add('hidden');
     });
 
@@ -1618,6 +1708,14 @@
     document.querySelectorAll('.quick-prompt-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         handleXiaoYoMessage(btn.dataset.prompt);
+      });
+    });
+
+    document.querySelectorAll('.quick-fill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById('chat-input');
+        input.value = btn.dataset.fill;
+        input.focus();
       });
     });
 
@@ -1795,8 +1893,25 @@
       if (selectedProd) {
         document.getElementById('rm-cost').value = selectedProd.costPrice;
       }
+      const hSel = document.getElementById('rm-hour');
+      const mSel = document.getElementById('rm-min');
+      if (!hSel.options.length) {
+        for (let h = 0; h < 24; h++) {
+          const v = String(h).padStart(2, '0');
+          hSel.add(new Option(v, v));
+        }
+        for (let m = 0; m < 60; m++) {
+          const v = String(m).padStart(2, '0');
+          mSel.add(new Option(v, v));
+        }
+      }
       document.getElementById('rm-qty').value = 5;
-      document.getElementById('rm-date').value = getNowDateTimeLocal();
+      const nowDT = getNowDateTimeLocal();
+      const initDate = state.selectedDate || nowDT.slice(0, 10);
+      document.getElementById('rm-date-value').value = initDate;
+      document.getElementById('rm-date-display').textContent = initDate.replace(/-/g, '/');
+      hSel.value = nowDT.slice(11, 13);
+      mSel.value = nowDT.slice(14, 16);
       document.getElementById('rm-note').value = '';
       updateRestockPreview();
       document.getElementById('restock-modal').classList.remove('hidden');
@@ -1825,7 +1940,10 @@
       const productId = document.getElementById('rm-product').value;
       const qty = parseInt(document.getElementById('rm-qty').value, 10) || 1;
       const unitCost = parseInt(document.getElementById('rm-cost').value, 10) || 0;
-      const restockTime = document.getElementById('rm-date').value || getNowDateTimeLocal();
+      const dPart = document.getElementById('rm-date-value').value || getTodayISO();
+      const hh = document.getElementById('rm-hour').value || '12';
+      const mm = document.getElementById('rm-min').value || '00';
+      const restockTime = `${dPart}T${hh}:${mm}`;
       const note = document.getElementById('rm-note').value.trim();
 
       const p = state.products.find(item => item.id === productId);
@@ -1904,6 +2022,38 @@
     document.getElementById('close-detail-modal').addEventListener('click', () => document.getElementById('detail-modal').classList.add('hidden'));
 
     // Report Day Filter & Delete Handlers
+    document.getElementById('jump-store-expense-btn').addEventListener('click', () => {
+      document.querySelector('[data-tab="reports"]').click();
+      setTimeout(() => {
+        const sec = document.getElementById('store-expense-section');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+    });
+
+    document.getElementById('open-restock-modal-btn').addEventListener('click', () => openRestockModal());
+
+    document.getElementById('clear-restocks-btn').addEventListener('click', () => {
+      state.restocks = [];
+      saveState();
+      renderAll();
+      showToast('已清空所有進貨支出紀錄！');
+    });
+
+    document.getElementById('restocks-ledger-list').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-delete-restock]');
+      if (!btn) return;
+      const id = btn.dataset.deleteRestock;
+      const r = state.restocks.find(item => item.id === id);
+      if (r) {
+        const prod = state.products.find(p => p.id === r.productId);
+        if (prod) prod.stock = Math.max(0, prod.stock - r.qty);
+        state.restocks = state.restocks.filter(item => item.id !== id);
+        saveState();
+        renderAll();
+        showToast('已刪除該筆進貨支出紀錄');
+      }
+    });
+
     document.getElementById('report-day-filter').addEventListener('change', renderReports);
 
     document.getElementById('sales-ledger-list').addEventListener('click', e => {
@@ -1923,11 +2073,100 @@
 
 
 
-    document.getElementById('reset-demo-btn').addEventListener('click', () => {
-      state = createDefaultData();
+    // Manual Today Adjustment Modal
+    document.getElementById('open-manual-today-btn').addEventListener('click', () => {
+      const activeDate = state.selectedDate || getTodayISO();
+      document.getElementById('mt-date-label').textContent = activeDate;
+      document.getElementById('mt-type').value = 'sale';
+      document.getElementById('mt-price-wrap').classList.remove('hidden');
+      document.getElementById('mt-name').value = '';
+      document.getElementById('mt-qty').value = 1;
+      document.getElementById('mt-cost').value = 0;
+      document.getElementById('mt-price').value = 0;
+      document.getElementById('manual-today-modal').classList.remove('hidden');
+    });
+    document.getElementById('mt-type').addEventListener('change', e => {
+      document.getElementById('mt-price-wrap').classList.toggle('hidden', e.target.value === 'restock');
+    });
+    document.getElementById('close-manual-today-modal').addEventListener('click', () => document.getElementById('manual-today-modal').classList.add('hidden'));
+    document.getElementById('cancel-manual-today-modal').addEventListener('click', () => document.getElementById('manual-today-modal').classList.add('hidden'));
+
+    document.getElementById('mt-clear-today-btn').addEventListener('click', () => {
+      const activeDate = state.selectedDate || getTodayISO();
+      state.sales = state.sales.filter(s => !s.saleTime.startsWith(activeDate));
       saveState();
+      document.getElementById('manual-today-modal').classList.add('hidden');
       renderAll();
-      showToast('已恢復預設範例手帳資料！');
+      showToast(`已清零 ${activeDate} 售出紀錄！`);
+    });
+
+    document.getElementById('manual-today-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const activeDate = state.selectedDate || getTodayISO();
+      const nowTime = new Date().toTimeString().slice(0, 5);
+      const type = document.getElementById('mt-type').value;
+      const name = document.getElementById('mt-name').value.trim();
+      const qty = parseInt(document.getElementById('mt-qty').value, 10) || 1;
+      const cost = parseInt(document.getElementById('mt-cost').value, 10) || 0;
+      const price = parseInt(document.getElementById('mt-price').value, 10) || 0;
+      const matched = state.products.find(p => p.name === name);
+
+      if (type === 'sale') {
+        state.sales.unshift({
+          id: 's_' + Date.now(),
+          productId: matched ? matched.id : '',
+          productName: name,
+          qty,
+          unitCost: cost,
+          unitPrice: price,
+          saleTime: `${activeDate}T${nowTime}`
+        });
+        showToast(`已手動補記今日售出「${name}」`);
+      } else {
+        state.restocks.unshift({
+          id: 'r_' + Date.now(),
+          productId: matched ? matched.id : '',
+          productName: name,
+          qty,
+          unitCost: cost,
+          restockTime: `${activeDate}T${nowTime}`,
+          note: '手動改帳'
+        });
+        showToast(`已手動補記今日支出「${name}」`);
+      }
+      saveState();
+      document.getElementById('manual-today-modal').classList.add('hidden');
+      renderAll();
+    });
+
+    // Edit Single Restock Expense Modal
+    document.getElementById('restocks-ledger-list').addEventListener('click', e => {
+      const editBtn = e.target.closest('button[data-edit-restock]');
+      if (!editBtn) return;
+      const r = state.restocks.find(item => item.id === editBtn.dataset.editRestock);
+      if (!r) return;
+      document.getElementById('er-id').value = r.id;
+      document.getElementById('er-name').value = r.productName;
+      document.getElementById('er-qty').value = r.qty;
+      document.getElementById('er-cost').value = r.unitCost;
+      document.getElementById('er-note').value = r.note || '';
+      document.getElementById('edit-restock-modal').classList.remove('hidden');
+    });
+    document.getElementById('close-edit-restock-modal').addEventListener('click', () => document.getElementById('edit-restock-modal').classList.add('hidden'));
+    document.getElementById('cancel-edit-restock-modal').addEventListener('click', () => document.getElementById('edit-restock-modal').classList.add('hidden'));
+    document.getElementById('edit-restock-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const id = document.getElementById('er-id').value;
+      const r = state.restocks.find(item => item.id === id);
+      if (!r) return;
+      r.productName = document.getElementById('er-name').value.trim();
+      r.qty = parseInt(document.getElementById('er-qty').value, 10) || 1;
+      r.unitCost = parseInt(document.getElementById('er-cost').value, 10) || 0;
+      r.note = document.getElementById('er-note').value.trim();
+      saveState();
+      document.getElementById('edit-restock-modal').classList.add('hidden');
+      renderAll();
+      showToast('已更新進貨支出明細！');
     });
 
     // Store Logo Upload
