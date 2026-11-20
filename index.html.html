@@ -43,15 +43,33 @@
       box-sizing: border-box;
     }
 
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      overscroll-behavior: none;
+      background-color: var(--paper-bg);
+    }
+
     body {
       font-family: 'MaoKen', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
       background-color: var(--paper-bg);
       background-image: radial-gradient(#DFD5C3 1.25px, transparent 1.25px);
       background-size: 22px 22px;
       color: var(--ink-main);
-      margin: 0;
-      padding: 0;
+      display: flex;
+      flex-direction: column;
       -webkit-font-smoothing: antialiased;
+    }
+
+    #app-scroll-area {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior-y: contain;
+      -webkit-overflow-scrolling: touch;
     }
 
     .journal-card {
@@ -217,8 +235,26 @@
 
     .sticker-photo {
       border: 3px solid #FFFFFF;
-      box-shadow: 0 4px 10px rgba(74, 59, 50, 0.12);
+      box-shadow: 0 4px 10px rgba(74, 59, 50, 0.14);
       background: #FFFFFF;
+    }
+
+    .sticker-diecut {
+      padding: 3px;
+      background: #FFFFFF;
+      filter: drop-shadow(0 3px 6px rgba(74, 59, 50, 0.18));
+    }
+
+    .cutout-blob-1 {
+      border-radius: 42% 58% 48% 52% / 48% 36% 64% 52%;
+    }
+
+    .cutout-blob-2 {
+      clip-path: polygon(6% 3%, 93% 0%, 100% 14%, 96% 88%, 85% 100%, 10% 96%, 0% 82%, 3% 15%);
+    }
+
+    .cutout-blob-3 {
+      border-radius: 56% 44% 62% 38% / 40% 58% 42% 60%;
     }
 
     .scrap-gingham {
@@ -257,12 +293,12 @@
     }
   </style>
 </head>
-<body class="min-h-screen pb-12">
+<body>
   <!-- Toast Container -->
   <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- Top Header -->
-  <header class="sticky top-0 z-30 bg-[#FDFBF7]/90 backdrop-blur-md border-b-2 border-[#E6DCCB]">
+  <!-- Top Header (Fixed App Bar) -->
+  <header class="shrink-0 z-30 bg-[#FDFBF7]/95 backdrop-blur-md border-b-2 border-[#E6DCCB] pt-[env(safe-area-inset-top)]">
     <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <label class="relative cursor-pointer group shrink-0" title="點擊更換賣場圖片">
@@ -324,22 +360,23 @@
     </nav>
   </header>
 
+  <div id="app-scroll-area" class="pb-10">
   <main class="max-w-5xl mx-auto px-4 pt-5">
     <!-- TAB 1: 小yo AI對話記帳 -->
     <section id="view-chat" class="space-y-5">
-      <!-- Quick Overview Strip -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <!-- Quick Overview Strip (2x3 mobile, 3x2 tablet/desktop) -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
         <div class="journal-card bg-[#FFF8D6] p-3.5 flex flex-col justify-between">
           <div class="text-xs text-[#8C7A6B] flex items-center gap-1 whitespace-nowrap">
-            <i data-lucide="sun" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i><span id="chat-kpi-day-label">今日淨盈利</span>
+            <i data-lucide="sun" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i><span id="chat-kpi-day-label">當日結餘</span>
           </div>
-          <div id="chat-kpi-today-profit" class="text-xl sm:text-2xl font-bold tabular-nums mt-1.5">$0</div>
+          <div id="chat-kpi-today-balance" class="text-xl sm:text-2xl font-bold tabular-nums mt-1.5">$0</div>
         </div>
         <div class="journal-card bg-[#E8F9F0] p-3.5 flex flex-col justify-between">
           <div class="text-xs text-[#8C7A6B] flex items-center gap-1 whitespace-nowrap">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i><span>當月累計盈利</span>
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i><span>當月結餘</span>
           </div>
-          <div id="chat-kpi-month-profit" class="text-xl sm:text-2xl font-bold tabular-nums mt-1.5">$0</div>
+          <div id="chat-kpi-month-balance" class="text-xl sm:text-2xl font-bold tabular-nums mt-1.5">$0</div>
         </div>
         <div class="journal-card bg-[#EEF7FF] p-3.5 flex flex-col justify-between">
           <div class="text-xs text-[#8C7A6B] flex items-center gap-1 whitespace-nowrap">
@@ -354,11 +391,17 @@
           </div>
           <div id="chat-kpi-store-expense" class="text-xl sm:text-2xl font-bold tabular-nums text-rose-700 mt-1.5">$0</div>
         </button>
-        <div class="journal-card bg-[#F3EEFF] p-3.5 col-span-2 sm:col-span-1 flex flex-col justify-between">
+        <div class="journal-card bg-[#F3EEFF] p-3.5 flex flex-col justify-between">
           <div class="text-xs text-[#8C7A6B] flex items-center gap-1 whitespace-nowrap">
             <i data-lucide="coins" class="w-3.5 h-3.5 text-violet-600 shrink-0"></i><span>本商店總收益</span>
           </div>
           <div id="chat-kpi-store-revenue" class="text-xl sm:text-2xl font-bold tabular-nums text-violet-800 mt-1.5">$0</div>
+        </div>
+        <div class="journal-card bg-white border-[#4A3B32] p-3.5 flex flex-col justify-between">
+          <div class="text-xs text-[#4A3B32] font-bold flex items-center gap-1 whitespace-nowrap">
+            <i data-lucide="wallet" class="w-3.5 h-3.5 text-emerald-700 shrink-0"></i><span>本店累積結餘</span>
+          </div>
+          <div id="chat-kpi-store-balance" class="text-xl sm:text-2xl font-bold tabular-nums mt-1.5">$0</div>
         </div>
       </div>
 
@@ -403,6 +446,9 @@
             </button>
             <button type="button" class="quick-fill-btn bg-[#F3EEFF] hover:bg-[#E5D9FF] border border-[#4A3B32] rounded-full px-3 py-1 text-xs font-bold transition" data-fill="增加今日備注：">
               「增加今日備注：」
+            </button>
+            <button type="button" class="quick-fill-btn bg-[#E8F9F0] hover:bg-[#B8EBD0] border border-[#4A3B32] rounded-full px-3 py-1 text-xs font-bold transition" data-fill="我自留一個">
+              「我自留一個XXX」
             </button>
           </div>
         </div>
@@ -465,16 +511,16 @@
           </div>
           <div class="grid grid-cols-3 gap-2.5 text-center">
             <div class="bg-white rounded-2xl p-2.5 sm:p-3 border border-[#E6DCCB] flex flex-col justify-between items-center">
-              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">今日營業額</div>
+              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">當日營業額</div>
               <div id="report-today-rev" class="text-base sm:text-lg font-bold tabular-nums mt-1.5">$0</div>
             </div>
-            <div class="bg-white rounded-2xl p-2.5 sm:p-3 border border-[#E6DCCB] flex flex-col justify-between items-center">
-              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">今日成本</div>
-              <div id="report-today-cost" class="text-base sm:text-lg font-bold tabular-nums mt-1.5">$0</div>
+            <div class="bg-[#FFF1EE] rounded-2xl p-2.5 sm:p-3 border border-[#E6DCCB] flex flex-col justify-between items-center">
+              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">當日支出</div>
+              <div id="report-today-expense" class="text-base sm:text-lg font-bold tabular-nums text-rose-600 mt-1.5">$0</div>
             </div>
             <div class="bg-[#E8F9F0] rounded-2xl p-2.5 sm:p-3 border border-[#4A3B32] flex flex-col justify-between items-center">
-              <div class="text-[11px] sm:text-xs text-[#4A3B32] whitespace-nowrap">今日淨盈利</div>
-              <div id="report-today-profit" class="text-base sm:text-lg font-bold tabular-nums text-emerald-700 mt-1.5">$0</div>
+              <div class="text-[11px] sm:text-xs text-[#4A3B32] whitespace-nowrap">當日結餘</div>
+              <div id="report-today-balance" class="text-base sm:text-lg font-bold tabular-nums mt-1.5">$0</div>
             </div>
           </div>
         </div>
@@ -498,16 +544,16 @@
               <div id="report-month-rev" class="text-base sm:text-lg font-bold tabular-nums mt-1.5">$0</div>
             </div>
             <div class="bg-[#E8F9F0] rounded-2xl p-2.5 border border-[#4A3B32] flex flex-col justify-between items-center">
-              <div class="text-[11px] sm:text-xs text-[#4A3B32] whitespace-nowrap">當月銷售淨利</div>
-              <div id="report-month-profit" class="text-base sm:text-lg font-bold tabular-nums text-emerald-700 mt-1.5">$0</div>
+              <div class="text-[11px] sm:text-xs text-[#4A3B32] whitespace-nowrap">當月結餘</div>
+              <div id="report-month-balance" class="text-base sm:text-lg font-bold tabular-nums mt-1.5">$0</div>
             </div>
             <div class="bg-[#FFF1EE] rounded-2xl p-2.5 border border-[#E6DCCB] flex flex-col justify-between items-center">
               <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">本商店總支出</div>
               <div id="report-store-expense" class="text-base sm:text-lg font-bold tabular-nums text-rose-600 mt-1.5">$0</div>
             </div>
-            <div class="bg-[#F3EEFF] rounded-2xl p-2.5 border border-[#E6DCCB] flex flex-col justify-between items-center">
-              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">本商店總收益</div>
-              <div id="report-store-revenue" class="text-base sm:text-lg font-bold tabular-nums text-violet-700 mt-1.5">$0</div>
+            <div class="bg-[#F3EEFF] rounded-2xl p-2.5 border border-[#4A3B32] flex flex-col justify-between items-center">
+              <div class="text-[11px] sm:text-xs text-[#4A3B32] whitespace-nowrap">本店累積結餘</div>
+              <div id="report-store-balance" class="text-base sm:text-lg font-bold tabular-nums mt-1.5">$0</div>
             </div>
           </div>
         </div>
@@ -566,11 +612,17 @@
 
 
     <!-- Footer -->
-    <footer class="mt-10 text-center text-xs text-[#8C7A6B] flex flex-wrap items-center justify-center gap-4">
-      <span>資料自動儲存在本機瀏覽器中</span>
-      <button id="open-manual-today-btn" type="button" class="underline hover:text-[#4A3B32]">手動改今日帳</button>
+    <footer class="mt-8 text-center text-xs text-[#8C7A6B] flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+      <button id="open-manual-today-btn" type="button" class="underline hover:text-[#4A3B32] whitespace-nowrap">手動改今日帳</button>
+      <button id="open-daily-narrative-btn" type="button" class="underline hover:text-[#4A3B32] whitespace-nowrap">日報表</button>
+      <button id="export-backup-btn" type="button" class="underline hover:text-[#4A3B32] whitespace-nowrap">匯出備份</button>
+      <label class="underline hover:text-[#4A3B32] cursor-pointer whitespace-nowrap">
+        <span>匯入還原</span>
+        <input id="import-backup-input" type="file" accept=".json,application/json" class="hidden" />
+      </label>
     </footer>
   </main>
+  </div>
 
   <!-- Modal: 新增 / 編輯商品 (含圖片示意圖上傳) -->
   <div id="product-modal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
@@ -628,6 +680,11 @@
         <div>
           <label class="block text-xs font-bold mb-1">單位 (選填)</label>
           <input id="pm-unit" type="text" placeholder="隻 / 個 / 組" value="個" class="w-full bg-[#FDFBF7] border-2 border-[#E6DCCB] focus:border-[#4A3B32] rounded-xl px-3 py-2 text-sm focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold mb-1">商品備注 (選填，跟小yo聊到商品也會自動記在這裡)</label>
+          <textarea id="pm-note" rows="2" placeholder="例如：都是在Threads賣出的、材質注意事項..." class="w-full bg-[#FDFBF7] border-2 border-[#E6DCCB] focus:border-[#4A3B32] rounded-xl px-3 py-2 text-sm focus:outline-none"></textarea>
         </div>
 
         <div class="flex justify-end gap-2 pt-2">
@@ -850,6 +907,53 @@
     </div>
   </div>
 
+  <!-- Modal: 文字化單頁日報表（便於每日截圖外存） -->
+  <div id="daily-narrative-modal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-3">
+    <div class="journal-card w-full max-w-sm p-4 bg-[#FDFBF7]">
+      <div class="flex items-center justify-between border-b border-dashed border-[#DFD5C3] pb-2 mb-2.5">
+        <div class="flex items-center gap-1.5">
+          <span class="text-sm font-bold">📋 小yo店舖日報表</span>
+          <span id="dn-date-label" class="text-xs text-[#8C7A6B] tabular-nums"></span>
+        </div>
+        <button id="close-daily-narrative-modal" class="p-1 rounded-lg hover:bg-[#FFF8D6]" title="關閉">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Compact Summary Row -->
+      <div id="dn-summary-strip" class="grid grid-cols-3 gap-1.5 text-center bg-white border border-[#E6DCCB] rounded-xl p-2 mb-2.5 text-[11px]">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Per-Product Sales & Stock Movement Table -->
+      <div class="text-[11px] font-bold text-[#8C7A6B] mb-1">今日各商品銷售與庫存動向</div>
+      <div id="dn-product-rows" class="bg-white border border-[#E6DCCB] rounded-xl divide-y divide-[#F2ECE1] text-[11px] max-h-[46vh] overflow-y-auto">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Daily Notes / Memo -->
+      <div id="dn-notes-box" class="mt-2.5 bg-[#FFF8D6]/70 border border-[#E6DCCB] rounded-xl px-2.5 py-2 text-[11px] text-[#4A3B32] hidden">
+      </div>
+
+      <div class="mt-2.5 text-center text-[10px] text-[#8C7A6B]">單頁文字總覽・可直接手機截圖保存</div>
+    </div>
+  </div>
+
+  <!-- Modal: 刪除對話並恢復原狀 -->
+  <div id="delete-chat-modal" class="fixed inset-0 z-[60] hidden modal-backdrop flex items-center justify-center p-4">
+    <div class="journal-card w-full max-w-sm p-5">
+      <div class="flex items-center gap-2 mb-2 text-rose-700">
+        <i data-lucide="undo-2" class="w-5 h-5 shrink-0"></i>
+        <h3 class="text-base font-bold">刪除對話紀錄</h3>
+      </div>
+      <p id="delete-chat-msg" class="text-sm text-[#4A3B32] leading-relaxed mb-4"></p>
+      <div class="flex justify-end gap-2">
+        <button id="cancel-delete-chat-btn" type="button" class="px-4 py-2 rounded-xl border-2 border-[#E6DCCB] text-sm font-bold">取消</button>
+        <button id="confirm-delete-chat-btn" type="button" class="journal-btn bg-[#FFD0C7] hover:bg-[#ffbfb3] px-4 py-2 text-sm font-bold text-rose-900">刪除並恢復</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal: 刪除商品確認 -->
   <div id="delete-product-modal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
     <div class="journal-card w-full max-w-sm p-5">
@@ -938,6 +1042,7 @@
     let activeTab = 'chat';
     let modalTempImage = '';
     let pendingDeleteProductId = null;
+    let pendingDeleteChatIdx = null;
     let polaroidLayoutIdx = new Date().getDate() % 3;
 
     function loadState() {
@@ -1050,20 +1155,26 @@
     function getTodayMetrics() {
       const todayISO = state.selectedDate || getTodayISO();
       const todaySales = state.sales.filter(s => s.saleTime.startsWith(todayISO));
+      const todayRestocks = state.restocks.filter(r => r.restockTime.startsWith(todayISO));
       let rev = 0, cost = 0, soldQty = 0;
       todaySales.forEach(s => {
         rev += s.unitPrice * s.qty;
         cost += s.unitCost * s.qty;
         soldQty += s.qty;
       });
-      return { todayISO, todaySales, rev, cost, profit: rev - cost, soldQty };
+      let restockExpense = 0;
+      todayRestocks.forEach(r => {
+        restockExpense += r.unitCost * r.qty;
+      });
+      return { todayISO, todaySales, rev, cost, profit: rev - cost, restockExpense, balance: rev - restockExpense, soldQty };
     }
 
     function getStoreTotals() {
       const totalRevenue = state.sales.reduce((acc, s) => acc + s.unitPrice * s.qty, 0);
       const totalExpense = state.restocks.reduce((acc, r) => acc + r.unitCost * r.qty, 0);
       const totalProfit = state.sales.reduce((acc, s) => acc + (s.unitPrice - s.unitCost) * s.qty, 0);
-      return { totalRevenue, totalExpense, totalProfit };
+      const storeBalance = totalRevenue - totalExpense;
+      return { totalRevenue, totalExpense, totalProfit, storeBalance };
     }
 
     // Core AI Chat Handler (小yo)
@@ -1076,6 +1187,7 @@
 
       let replyText = '';
       let receiptCard = null;
+      let actionRecord = null;
 
       const activeDate = state.selectedDate || getTodayISO();
 
@@ -1111,21 +1223,54 @@
           `📅 本月 (${state.selectedMonth})：累計售出 ${m.soldQty} 件，總營業額 ${fmtMoney(m.rev)}，銷售淨利 ${fmtMoney(m.profit)}\n` +
           `🏪 本商店累計：總支出 ${fmtMoney(st.totalExpense)}，總收益 ${fmtMoney(st.totalRevenue)}！`;
       } else {
-        const isRestock = /(進貨|補貨|買進|叫貨)/.test(text);
-        const isSale = /(賣出|售出|賣掉|出貨|賣了|賣)/.test(text);
+        const hasExplicitQty = /(\d+|[一二兩三四五六七八九十]+)\s*(隻|只|個|件|組|盒|包|張|份|本)/.test(text) || /(賣出|售出|進貨|補貨|自留)\s*(\d+|[一二兩三四五六七八九十]+)/.test(text);
+        const isSelfKeep = /(自留|自己留|自己買|留一個|留用)/.test(text) && hasExplicitQty;
+        const isRestock = /(進貨|補貨|買進|叫貨)/.test(text) && hasExplicitQty;
+        const isSale = /(賣出|售出|賣掉|出貨|賣了)/.test(text) && hasExplicitQty;
         const product = findMatchingProduct(text);
 
-        if (!product && !isSale && !isRestock) {
+        if (!product && !isSale && !isRestock && !isSelfKeep) {
           // Conversational store diary note!
-          const todayISO = getTodayISO();
           if (!state.dailyNotes) state.dailyNotes = {};
-          if (!state.dailyNotes[todayISO]) state.dailyNotes[todayISO] = [];
-          state.dailyNotes[todayISO].push(text);
-          replyText = `小yo已經把這段店舖心情記進今天的「📸 快照拍立得」裡囉！✨\n點右上角的「快照」就能洗出今天的店舖日記照片～`;
+          if (!state.dailyNotes[activeDate]) state.dailyNotes[activeDate] = [];
+          state.dailyNotes[activeDate].push(text);
+          actionRecord = { kind: 'dailyNote', date: activeDate, text };
+          replyText = `小yo已經把這段店舖心情記進 ${activeDate} 的「📷 拍立得快照」裡囉！✨`;
           showToast('已記錄到今日店舖快照！');
         } else if (!product) {
           const names = state.products.map(p => `「${p.name}」`).join('、');
           replyText = `小yo找不到這個商品耶 🤔 目前貨架上有：${names || '尚未建立商品'}。\n你可以點右上角的「新增商品」先把商品建檔，再跟我說喔！`;
+        } else if (isSelfKeep) {
+          const qty = parseChineseQty(text);
+          const selfKeepTime = `${activeDate}T${nowTime}`;
+          const prevStock = product.stock;
+          product.stock = Math.max(0, product.stock - qty);
+
+          const rid = 'r_' + Date.now();
+          state.restocks.unshift({
+            id: rid,
+            productId: product.id,
+            productName: product.name,
+            qty,
+            unitCost: 0,
+            restockTime: selfKeepTime,
+            note: '店主自留（成本已計入進貨）',
+            isSelfKeep: true
+          });
+          actionRecord = { kind: 'restock', id: rid, productId: product.id, qty, isSelfKeep: true };
+
+          const stockNote = prevStock < qty ? `（原庫存僅 ${prevStock} ${product.unit}，已扣至 0）` : '';
+          replyText = `好喔！已幫你登記自留 ${qty} ${product.unit}「${product.name}」🐶✨${stockNote}\n庫存已減為 ${product.stock} ${product.unit}（進貨成本已包含在總支出中，不增加利潤與收益）！`;
+          receiptCard = {
+            type: 'restock',
+            productName: `${product.name} (自留)`,
+            image: product.image,
+            qty,
+            unit: product.unit,
+            total: 0,
+            stockAfter: product.stock
+          };
+          showToast(`已登記自留 ${qty} ${product.unit} ${product.name}，剩餘庫存 ${product.stock} ${product.unit}`);
         } else if (isRestock) {
           const qty = parseChineseQty(text);
           const customCostMatch = text.match(/(?:進貨價|成本|單價)\s*(\d+)/);
@@ -1141,8 +1286,9 @@
           product.stock += qty;
           if (customCostMatch) product.costPrice = unitCost;
 
+          const rid = 'r_' + Date.now();
           state.restocks.unshift({
-            id: 'r_' + Date.now(),
+            id: rid,
             productId: product.id,
             productName: product.name,
             qty,
@@ -1150,6 +1296,7 @@
             restockTime,
             note: '小yo對話進貨'
           });
+          actionRecord = { kind: 'restock', id: rid, productId: product.id, qty, isSelfKeep: false };
 
           const totalSpend = qty * unitCost;
           replyText = `收到！小yo已經幫你把「${product.name}」進貨入庫囉 📦`;
@@ -1163,14 +1310,18 @@
             stockAfter: product.stock
           };
           showToast(`已登記進貨 ${qty} ${product.unit} ${product.name}`);
-        } else if (!isSale && !isRestock && /(threads|ig|instagram|上架|新品|熱銷|好賣|心情|寄貨|包裝|客人|好評)/i.test(text)) {
-          const todayISO = getTodayISO();
+        } else if (!isSale) {
+          // Mentioned a product WITHOUT an explicit bookkeeping action -> save to product's note field!
+          const stamp = activeDate.slice(5).replace('-', '/');
+          const entry = `[${stamp}] ${text}`;
+          product.note = product.note ? `${product.note}\n${entry}` : entry;
           if (!state.dailyNotes) state.dailyNotes = {};
-          if (!state.dailyNotes[todayISO]) state.dailyNotes[todayISO] = [];
-          state.dailyNotes[todayISO].push(text);
-          replyText = `哇～聽起來超棒的！小yo已經幫你把「${product.name}」的這則店舖動態存進今天的「📸 快照拍立得」囉！✨`;
-          showToast('已記錄到今日店舖快照！');
-        } else if (isSale || product) {
+          if (!state.dailyNotes[activeDate]) state.dailyNotes[activeDate] = [];
+          state.dailyNotes[activeDate].push(text);
+          actionRecord = { kind: 'productNote', productId: product.id, entry, date: activeDate, text };
+          replyText = `收到！沒有變動庫存與金額，小yo已經幫你把這句記進「${product.name}」的商品備注欄囉 📝✨`;
+          showToast(`已加入「${product.name}」備注欄！`);
+        } else {
           const qty = parseChineseQty(text);
           let saleTime = `${activeDate}T${nowTime}`;
           if (/昨天|昨日/.test(text)) {
@@ -1183,8 +1334,9 @@
           product.stock = Math.max(0, product.stock - qty);
 
           const profit = (product.sellPrice - product.costPrice) * qty;
+          const sid = 's_' + Date.now();
           state.sales.unshift({
-            id: 's_' + Date.now(),
+            id: sid,
             productId: product.id,
             productName: product.name,
             qty,
@@ -1192,6 +1344,7 @@
             unitPrice: product.sellPrice,
             saleTime
           });
+          actionRecord = { kind: 'sale', id: sid, productId: product.id, qty };
 
           const lowWarn = product.stock <= product.lowStockThreshold ? `\n⚠️ 小提醒：「${product.name}」目前只剩 ${product.stock} ${product.unit}，記得準備補貨喔！` : '';
           const stockShortNote = prevStock < qty ? `（原庫存僅 ${prevStock} ${product.unit}，已扣至 0）` : '';
@@ -1214,6 +1367,7 @@
         role: 'assistant',
         text: replyText,
         receipt: receiptCard,
+        actionRecord,
         time: nowTime
       });
 
@@ -1227,7 +1381,7 @@
       const container = document.getElementById('chat-messages');
       container.innerHTML = '';
 
-      state.chatHistory.forEach(msg => {
+      state.chatHistory.forEach((msg, idx) => {
         const isUser = msg.role === 'user';
         const wrapper = document.createElement('div');
         wrapper.className = `flex ${isUser ? 'justify-end' : 'justify-start'} items-end gap-2`;
@@ -1241,9 +1395,22 @@
         }
 
         const bubble = document.createElement('div');
-        bubble.className = `max-w-[82%] sm:max-w-[75%] rounded-2xl px-3.5 py-2.5 text-sm border-2 border-[#4A3B32] ${
+        bubble.className = `max-w-[82%] sm:max-w-[75%] rounded-2xl px-3.5 py-2.5 text-sm border-2 border-[#4A3B32] select-none cursor-pointer ${
           isUser ? 'bg-[#FFE680] rounded-br-sm' : 'bg-[#FDFBF7] rounded-bl-sm'
         }`;
+        bubble.title = '長按可刪除此對話並恢復原狀';
+        let pressTimer = null;
+        const startPress = () => {
+          pressTimer = setTimeout(() => openDeleteChatModal(idx), 480);
+        };
+        const cancelPress = () => { if (pressTimer) clearTimeout(pressTimer); pressTimer = null; };
+        bubble.addEventListener('touchstart', startPress, { passive: true });
+        bubble.addEventListener('touchend', cancelPress);
+        bubble.addEventListener('touchmove', cancelPress);
+        bubble.addEventListener('mousedown', startPress);
+        bubble.addEventListener('mouseup', cancelPress);
+        bubble.addEventListener('mouseleave', cancelPress);
+        bubble.addEventListener('contextmenu', e => { e.preventDefault(); cancelPress(); openDeleteChatModal(idx); });
 
         const textEl = document.createElement('div');
         textEl.className = 'whitespace-pre-line leading-relaxed';
@@ -1290,12 +1457,20 @@
       const st = getStoreTotals();
 
       const isActualToday = t.todayISO === getTodayISO();
-      document.getElementById('chat-kpi-day-label').textContent = isActualToday ? '今日淨盈利' : `${t.todayISO.slice(5).replace('-', '/')} 淨盈利`;
-      document.getElementById('chat-kpi-today-profit').textContent = fmtMoney(t.profit);
-      document.getElementById('chat-kpi-month-profit').textContent = fmtMoney(m.profit);
+      document.getElementById('chat-kpi-day-label').textContent = isActualToday ? '當日結餘' : `${t.todayISO.slice(5).replace('-', '/')} 結餘`;
+
+      const setBalanceEl = (id, val, extra = '') => {
+        const el = document.getElementById(id);
+        el.textContent = fmtMoney(val);
+        el.className = `${extra} ${val >= 0 ? 'text-emerald-700' : 'text-rose-700'}`;
+      };
+
+      setBalanceEl('chat-kpi-today-balance', t.balance, 'text-xl sm:text-2xl font-bold tabular-nums mt-1.5');
+      setBalanceEl('chat-kpi-month-balance', m.cashflow, 'text-xl sm:text-2xl font-bold tabular-nums mt-1.5');
       document.getElementById('chat-kpi-month-rev').textContent = fmtMoney(m.rev);
       document.getElementById('chat-kpi-store-expense').textContent = fmtMoney(st.totalExpense);
       document.getElementById('chat-kpi-store-revenue').textContent = fmtMoney(st.totalRevenue);
+      setBalanceEl('chat-kpi-store-balance', st.storeBalance, 'text-xl sm:text-2xl font-bold tabular-nums mt-1.5');
 
       document.getElementById('current-date-label').textContent = t.todayISO.replace(/-/g, '/');
     }
@@ -1315,10 +1490,14 @@
         const unitProfit = p.sellPrice - p.costPrice;
         const margin = p.sellPrice > 0 ? Math.round((unitProfit / p.sellPrice) * 100) : 0;
 
-        // Calculate product total & month sales
+        // Calculate product net profit = total sales revenue - total restock spend (cash-basis)
         const pSalesAll = state.sales.filter(s => s.productId === p.id);
         const totalSold = pSalesAll.reduce((acc, s) => acc + s.qty, 0);
-        const totalProfit = pSalesAll.reduce((acc, s) => acc + (s.unitPrice - s.unitCost) * s.qty, 0);
+        const totalSalesRev = pSalesAll.reduce((acc, s) => acc + s.unitPrice * s.qty, 0);
+        const pRestocksAll = state.restocks.filter(r => r.productId === p.id);
+        const totalRestockSpend = pRestocksAll.reduce((acc, r) => acc + r.unitCost * r.qty, 0);
+        const selfKeepQty = pRestocksAll.filter(r => r.isSelfKeep || (r.note && r.note.includes('店主自留'))).reduce((acc, r) => acc + r.qty, 0);
+        const totalProfit = totalSalesRev - totalRestockSpend;
 
         let stockBadge = `<span class="sticker-badge bg-[#E8F9F0] text-emerald-800">庫存 ${p.stock} ${p.unit}</span>`;
         if (p.stock === 0) {
@@ -1347,6 +1526,7 @@
                   <span>進貨：<b>${fmtMoney(p.costPrice)}</b></span>
                   <span>售價：<b>${fmtMoney(p.sellPrice)}</b></span>
                 </div>
+                ${p.note ? `<div class="mt-1.5 text-[11px] bg-[#FFF8D6] border border-[#E6DCCB] rounded-xl px-2.5 py-1 text-[#4A3B32] whitespace-pre-line">📝 ${p.note}</div>` : ''}
               </div>
             </div>
 
@@ -1357,11 +1537,11 @@
               </div>
               <div>
                 <div class="text-[#8C7A6B]">累計售出</div>
-                <div class="font-bold mt-0.5">${totalSold} ${p.unit}</div>
+                <div class="font-bold mt-0.5">${totalSold}${p.unit}${selfKeepQty ? ` (留${selfKeepQty})` : ''}</div>
               </div>
               <div>
-                <div class="text-[#8C7A6B]">單品總盈利</div>
-                <div class="font-bold text-emerald-700 mt-0.5">${fmtMoney(totalProfit)}</div>
+                <div class="text-[#8C7A6B]">單品淨盈利</div>
+                <div class="font-bold ${totalProfit >= 0 ? 'text-emerald-700' : 'text-rose-700'} mt-0.5">${fmtMoney(totalProfit)}</div>
               </div>
             </div>
           </div>
@@ -1391,18 +1571,24 @@
       const [y, mo] = state.selectedMonth.split('-').map(Number);
 
       document.getElementById('report-today-date').textContent = t.todayISO;
-      document.getElementById('report-today-count').textContent = `${t.todaySales.length} 筆 / ${t.soldQty} 件`;
+      document.getElementById('report-today-count').textContent = `${t.todaySales.length}筆 / ${t.soldQty}件`;
       document.getElementById('report-today-rev').textContent = fmtMoney(t.rev);
-      document.getElementById('report-today-cost').textContent = fmtMoney(t.cost);
-      document.getElementById('report-today-profit').textContent = fmtMoney(t.profit);
+      document.getElementById('report-today-expense').textContent = fmtMoney(t.restockExpense);
+      const rtb = document.getElementById('report-today-balance');
+      rtb.textContent = fmtMoney(t.balance);
+      rtb.className = `text-base sm:text-lg font-bold tabular-nums mt-1.5 ${t.balance >= 0 ? 'text-emerald-700' : 'text-rose-700'}`;
 
       const st = getStoreTotals();
       document.getElementById('report-month-title').textContent = `${y}年${mo}月`;
-      document.getElementById('report-month-count').textContent = `${m.soldQty} 件售出`;
+      document.getElementById('report-month-count').textContent = `${m.soldQty}件售出`;
       document.getElementById('report-month-rev').textContent = fmtMoney(m.rev);
-      document.getElementById('report-month-profit').textContent = fmtMoney(m.profit);
+      const rmb = document.getElementById('report-month-balance');
+      rmb.textContent = fmtMoney(m.cashflow);
+      rmb.className = `text-base sm:text-lg font-bold tabular-nums mt-1.5 ${m.cashflow >= 0 ? 'text-emerald-700' : 'text-rose-700'}`;
       document.getElementById('report-store-expense').textContent = fmtMoney(st.totalExpense);
-      document.getElementById('report-store-revenue').textContent = fmtMoney(st.totalRevenue);
+      const rsb = document.getElementById('report-store-balance');
+      rsb.textContent = fmtMoney(st.storeBalance);
+      rsb.className = `text-base sm:text-lg font-bold tabular-nums mt-1.5 ${st.storeBalance >= 0 ? 'text-emerald-700' : 'text-rose-700'}`;
 
       // Build daily chart data
       const daysInMonth = new Date(y, mo, 0).getDate();
@@ -1784,6 +1970,81 @@
       document.getElementById('delete-product-modal').classList.add('hidden');
     }
 
+    function openDeleteChatModal(idx) {
+      pendingDeleteChatIdx = idx;
+      const msg = state.chatHistory[idx];
+      if (!msg) return;
+      const pairedAssistant = msg.role === 'user' ? state.chatHistory[idx + 1] : msg;
+      const hasAction = pairedAssistant && pairedAssistant.actionRecord;
+      document.getElementById('delete-chat-msg').textContent = hasAction
+        ? '確定要刪除這則對話嗎？系統會同步撤銷這筆「賣出／進貨／自留／備注」指令並恢復原本庫存與金額！'
+        : '確定要刪除這則對話紀錄嗎？';
+      document.getElementById('delete-chat-modal').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeDeleteChatModal() {
+      pendingDeleteChatIdx = null;
+      document.getElementById('delete-chat-modal').classList.add('hidden');
+    }
+
+    document.getElementById('cancel-delete-chat-btn').addEventListener('click', closeDeleteChatModal);
+    document.getElementById('confirm-delete-chat-btn').addEventListener('click', () => {
+      if (pendingDeleteChatIdx === null) return;
+      const idx = pendingDeleteChatIdx;
+      const msg = state.chatHistory[idx];
+      if (!msg) { closeDeleteChatModal(); return; }
+
+      let removeIndices = [idx];
+      let actionMsg = msg;
+      if (msg.role === 'user' && state.chatHistory[idx + 1] && state.chatHistory[idx + 1].role === 'assistant') {
+        removeIndices = [idx, idx + 1];
+        actionMsg = state.chatHistory[idx + 1];
+      } else if (msg.role === 'assistant' && idx > 0 && state.chatHistory[idx - 1].role === 'user') {
+        removeIndices = [idx - 1, idx];
+      }
+
+      const rec = actionMsg && actionMsg.actionRecord;
+      if (rec) {
+        if (rec.kind === 'sale') {
+          const sale = state.sales.find(s => s.id === rec.id);
+          if (sale) {
+            const prod = state.products.find(p => p.id === rec.productId);
+            if (prod) prod.stock += sale.qty;
+            state.sales = state.sales.filter(s => s.id !== rec.id);
+          }
+        } else if (rec.kind === 'restock') {
+          const r = state.restocks.find(item => item.id === rec.id);
+          if (r) {
+            const prod = state.products.find(p => p.id === rec.productId);
+            if (prod) {
+              if (rec.isSelfKeep) prod.stock += r.qty;
+              else prod.stock = Math.max(0, prod.stock - r.qty);
+            }
+            state.restocks = state.restocks.filter(item => item.id !== rec.id);
+          }
+        } else if (rec.kind === 'productNote') {
+          const prod = state.products.find(p => p.id === rec.productId);
+          if (prod && prod.note) {
+            prod.note = prod.note.split('\n').filter(line => line !== rec.entry).join('\n');
+          }
+          if (state.dailyNotes && state.dailyNotes[rec.date]) {
+            state.dailyNotes[rec.date] = state.dailyNotes[rec.date].filter(n => n !== rec.text);
+          }
+        } else if (rec.kind === 'dailyNote') {
+          if (state.dailyNotes && state.dailyNotes[rec.date]) {
+            state.dailyNotes[rec.date] = state.dailyNotes[rec.date].filter(n => n !== rec.text);
+          }
+        }
+      }
+
+      state.chatHistory = state.chatHistory.filter((_, i) => !removeIndices.includes(i));
+      saveState();
+      closeDeleteChatModal();
+      renderAll();
+      showToast(rec ? '已刪除對話並恢復原本庫存與金額！' : '已刪除該則對話');
+    });
+
     document.getElementById('cancel-delete-product-btn').addEventListener('click', closeDeleteProductModal);
     document.getElementById('confirm-delete-product-btn').addEventListener('click', () => {
       if (!pendingDeleteProductId) return;
@@ -1806,6 +2067,7 @@
       document.getElementById('pm-stock').value = product ? product.stock : 10;
       document.getElementById('pm-low-stock').value = product ? product.lowStockThreshold : 3;
       document.getElementById('pm-unit').value = product ? product.unit : '個';
+      document.getElementById('pm-note').value = product && product.note ? product.note : '';
       modalTempImage = product ? product.image : DEFAULT_IMAGES.snoopy;
       document.getElementById('pm-img-preview').src = modalTempImage;
     }
@@ -1852,6 +2114,7 @@
       const stock = parseInt(document.getElementById('pm-stock').value, 10) || 0;
       const lowStockThreshold = parseInt(document.getElementById('pm-low-stock').value, 10) || 0;
       const unit = document.getElementById('pm-unit').value.trim() || '個';
+      const note = document.getElementById('pm-note').value.trim();
 
       if (id) {
         const existing = state.products.find(p => p.id === id);
@@ -1862,21 +2125,39 @@
           existing.stock = stock;
           existing.lowStockThreshold = lowStockThreshold;
           existing.unit = unit;
+          existing.note = note;
           existing.image = modalTempImage;
         }
         showToast(`已更新「${name}」`);
       } else {
+        const newId = 'p_' + Date.now();
         state.products.push({
-          id: 'p_' + Date.now(),
+          id: newId,
           name,
           costPrice,
           sellPrice,
           stock,
           lowStockThreshold,
           unit,
+          note,
           image: modalTempImage
         });
-        showToast(`已新增商品「${name}」`);
+        if (stock > 0 && costPrice > 0) {
+          const activeDate = state.selectedDate || getTodayISO();
+          const nowTime = new Date().toTimeString().slice(0, 5);
+          state.restocks.unshift({
+            id: 'r_' + Date.now(),
+            productId: newId,
+            productName: name,
+            qty: stock,
+            unitCost: costPrice,
+            restockTime: `${activeDate}T${nowTime}`,
+            note: '初始進貨入庫'
+          });
+          showToast(`已新增「${name}」並自動計入進貨成本 ${fmtMoney(stock * costPrice)}`);
+        } else {
+          showToast(`已新增商品「${name}」`);
+        }
       }
 
       saveState();
@@ -1973,8 +2254,8 @@
       const restocks = state.restocks.filter(r => r.productId === p.id).sort((a, b) => b.restockTime.localeCompare(a.restockTime));
       const totalSold = sales.reduce((acc, s) => acc + s.qty, 0);
       const totalRev = sales.reduce((acc, s) => acc + s.unitPrice * s.qty, 0);
-      const totalProfit = sales.reduce((acc, s) => acc + (s.unitPrice - s.unitCost) * s.qty, 0);
       const totalSpend = restocks.reduce((acc, r) => acc + r.unitCost * r.qty, 0);
+      const totalProfit = totalRev - totalSpend;
 
       document.getElementById('detail-modal-body').innerHTML = `
         <div class="flex items-center gap-4 mb-4">
@@ -1985,40 +2266,95 @@
           </div>
         </div>
         <div class="grid grid-cols-3 gap-2 mb-4 text-center text-xs">
-          <div class="bg-[#EEF7FF] p-2.5 rounded-xl border border-[#E6DCCB]">
-            <div class="text-[#8C7A6B]">累計營業額</div>
-            <div class="font-bold text-sm mt-0.5">${fmtMoney(totalRev)} (${totalSold}${p.unit})</div>
+          <div class="bg-[#EEF7FF] p-2.5 rounded-xl border border-[#E6DCCB] flex flex-col justify-start items-center">
+            <div class="text-[11px] text-[#8C7A6B] whitespace-nowrap">累計營業額</div>
+            <div class="font-bold text-sm tabular-nums mt-1 whitespace-nowrap">${fmtMoney(totalRev)}</div>
+            <div class="text-[10px] text-[#8C7A6B] whitespace-nowrap mt-0.5">(${totalSold}${p.unit})</div>
           </div>
-          <div class="bg-[#E8F9F0] p-2.5 rounded-xl border border-[#E6DCCB]">
-            <div class="text-[#8C7A6B]">累計淨盈利</div>
-            <div class="font-bold text-sm text-emerald-700 mt-0.5">${fmtMoney(totalProfit)}</div>
+          <div class="bg-[#E8F9F0] p-2.5 rounded-xl border border-[#E6DCCB] flex flex-col justify-start items-center">
+            <div class="text-[11px] text-[#8C7A6B] whitespace-nowrap">累計淨盈利</div>
+            <div class="font-bold text-sm tabular-nums ${totalProfit >= 0 ? 'text-emerald-700' : 'text-rose-700'} mt-1 whitespace-nowrap">${fmtMoney(totalProfit)}</div>
           </div>
-          <div class="bg-[#FFF1EE] p-2.5 rounded-xl border border-[#E6DCCB]">
-            <div class="text-[#8C7A6B]">累計進貨支出</div>
-            <div class="font-bold text-sm text-rose-700 mt-0.5">${fmtMoney(totalSpend)}</div>
+          <div class="bg-[#FFF1EE] p-2.5 rounded-xl border border-[#E6DCCB] flex flex-col justify-start items-center">
+            <div class="text-[11px] text-[#8C7A6B] whitespace-nowrap">累計支出</div>
+            <div class="font-bold text-sm tabular-nums text-rose-700 mt-1 whitespace-nowrap">${fmtMoney(totalSpend)}</div>
           </div>
         </div>
         <h4 class="font-bold text-sm mb-2">最近售出紀錄</h4>
         <div class="space-y-1.5 mb-4 max-h-40 overflow-y-auto">
           ${sales.length ? sales.map(s => `
-            <div class="flex justify-between text-xs bg-[#FDFBF7] px-3 py-2 rounded-xl border border-[#E6DCCB]">
-              <span>${s.saleTime.replace('T', ' ')} ・ 售出 ${s.qty} ${p.unit}</span>
-              <span class="font-bold text-emerald-700">+${fmtMoney((s.unitPrice - s.unitCost) * s.qty)}</span>
+            <div class="flex items-center justify-between gap-2 text-xs bg-[#FDFBF7] px-3 py-2 rounded-xl border border-[#E6DCCB]">
+              <span class="truncate">${s.saleTime.replace('T', ' ')} ・ 售出 ${s.qty} ${p.unit}</span>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="font-bold text-emerald-700 tabular-nums">+${fmtMoney(s.unitPrice * s.qty)}</span>
+                <button type="button" data-detail-delete-sale="${s.id}" data-pid="${p.id}" class="p-1 rounded-lg text-[#B5A698] hover:text-rose-600 hover:bg-[#FFF1EE]" title="刪除此筆售出並補回庫存">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
             </div>
           `).join('') : '<div class="text-xs text-[#8C7A6B]">尚無售出紀錄</div>'}
         </div>
-        <h4 class="font-bold text-sm mb-2">最近進貨紀錄</h4>
+        <h4 class="font-bold text-sm mb-2">最近進貨／自留紀錄</h4>
         <div class="space-y-1.5 max-h-36 overflow-y-auto">
-          ${restocks.length ? restocks.map(r => `
-            <div class="flex justify-between text-xs bg-[#FDFBF7] px-3 py-2 rounded-xl border border-[#E6DCCB]">
-              <span>${r.restockTime.replace('T', ' ')} ・ 進貨 ${r.qty} ${p.unit}</span>
-              <span class="font-bold text-rose-700">-${fmtMoney(r.unitCost * r.qty)}</span>
-            </div>
-          `).join('') : '<div class="text-xs text-[#8C7A6B]">尚無進貨紀錄</div>'}
+          ${restocks.length ? restocks.map(r => {
+            const isSK = r.isSelfKeep || (r.note && r.note.includes('店主自留'));
+            return `
+              <div class="flex items-center justify-between gap-2 text-xs bg-[#FDFBF7] px-3 py-2 rounded-xl border border-[#E6DCCB]">
+                <span class="truncate">${r.restockTime.replace('T', ' ')} ・ ${isSK ? '自留' : '進貨'} ${r.qty} ${p.unit}</span>
+                <div class="flex items-center gap-2 shrink-0">
+                  <span class="font-bold ${isSK ? 'text-[#8C7A6B]' : 'text-rose-700'} tabular-nums">${isSK ? '自留' : '-' + fmtMoney(r.unitCost * r.qty)}</span>
+                  <button type="button" data-detail-delete-restock="${r.id}" data-pid="${p.id}" class="p-1 rounded-lg text-[#B5A698] hover:text-rose-600 hover:bg-[#FFF1EE]" title="刪除此筆紀錄並還原庫存">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('') : '<div class="text-xs text-[#8C7A6B]">尚無進貨紀錄</div>'}
         </div>
       `;
       document.getElementById('detail-modal').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
     }
+
+    document.getElementById('detail-modal-body').addEventListener('click', e => {
+      const saleBtn = e.target.closest('button[data-detail-delete-sale]');
+      if (saleBtn) {
+        const sid = saleBtn.dataset.detailDeleteSale;
+        const pid = saleBtn.dataset.pid;
+        const sale = state.sales.find(s => s.id === sid);
+        if (sale) {
+          const prod = state.products.find(p => p.id === pid);
+          if (prod) prod.stock += sale.qty;
+          state.sales = state.sales.filter(s => s.id !== sid);
+          saveState();
+          renderAll();
+          if (prod) openDetailModal(prod);
+          showToast(`已刪除售出紀錄並補回 ${sale.qty} 件庫存`);
+        }
+        return;
+      }
+      const restockBtn = e.target.closest('button[data-detail-delete-restock]');
+      if (restockBtn) {
+        const rid = restockBtn.dataset.detailDeleteRestock;
+        const pid = restockBtn.dataset.pid;
+        const r = state.restocks.find(item => item.id === rid);
+        if (r) {
+          const prod = state.products.find(p => p.id === pid);
+          if (prod) {
+            if (r.isSelfKeep || (r.note && r.note.includes('店主自留'))) {
+              prod.stock += r.qty;
+            } else {
+              prod.stock = Math.max(0, prod.stock - r.qty);
+            }
+          }
+          state.restocks = state.restocks.filter(item => item.id !== rid);
+          saveState();
+          renderAll();
+          if (prod) openDetailModal(prod);
+          showToast('已刪除該筆紀錄並還原庫存與金額');
+        }
+      }
+    });
     document.getElementById('close-detail-modal').addEventListener('click', () => document.getElementById('detail-modal').classList.add('hidden'));
 
     // Report Day Filter & Delete Handlers
@@ -2046,7 +2382,13 @@
       const r = state.restocks.find(item => item.id === id);
       if (r) {
         const prod = state.products.find(p => p.id === r.productId);
-        if (prod) prod.stock = Math.max(0, prod.stock - r.qty);
+        if (prod) {
+          if (r.isSelfKeep || (r.note && r.note.includes('店主自留'))) {
+            prod.stock += r.qty;
+          } else {
+            prod.stock = Math.max(0, prod.stock - r.qty);
+          }
+        }
         state.restocks = state.restocks.filter(item => item.id !== id);
         saveState();
         renderAll();
@@ -2072,6 +2414,76 @@
     });
 
 
+
+    // Single-Page Text Daily Report (文字化日報表) Modal
+    document.getElementById('open-daily-narrative-btn').addEventListener('click', () => {
+      const activeDate = state.selectedDate || getTodayISO();
+      const t = getTodayMetrics();
+      document.getElementById('dn-date-label').textContent = activeDate.replace(/-/g, '/');
+
+      document.getElementById('dn-summary-strip').innerHTML = `
+        <div>
+          <div class="text-[10px] text-[#8C7A6B]">當日營業額</div>
+          <div class="font-bold text-xs tabular-nums">${fmtMoney(t.rev)}</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-[#8C7A6B]">當日支出</div>
+          <div class="font-bold text-xs text-rose-700 tabular-nums">${fmtMoney(t.restockExpense)}</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-[#8C7A6B]">當日結餘</div>
+          <div class="font-bold text-xs tabular-nums ${t.balance >= 0 ? 'text-emerald-700' : 'text-rose-700'}">${fmtMoney(t.balance)}</div>
+        </div>
+      `;
+
+      const todayRestocks = state.restocks.filter(r => r.restockTime.startsWith(activeDate));
+      const rowsEl = document.getElementById('dn-product-rows');
+      if (state.products.length === 0 && t.todaySales.length === 0) {
+        rowsEl.innerHTML = '<div class="p-3 text-center text-[#8C7A6B]">尚無商品與銷售紀錄</div>';
+      } else {
+        rowsEl.innerHTML = state.products.map(p => {
+          const pSales = t.todaySales.filter(s => s.productId === p.id);
+          const soldQty = pSales.reduce((acc, s) => acc + s.qty, 0);
+          const soldRev = pSales.reduce((acc, s) => acc + s.unitPrice * s.qty, 0);
+
+          const pRestocks = todayRestocks.filter(r => r.productId === p.id);
+          const restockQty = pRestocks.filter(r => !(r.isSelfKeep || (r.note && r.note.includes('店主自留')))).reduce((acc, r) => acc + r.qty, 0);
+          const selfKeepQty = pRestocks.filter(r => r.isSelfKeep || (r.note && r.note.includes('店主自留'))).reduce((acc, r) => acc + r.qty, 0);
+
+          const moves = [];
+          if (soldQty > 0) moves.push(`售${soldQty}`);
+          if (restockQty > 0) moves.push(`進${restockQty}`);
+          if (selfKeepQty > 0) moves.push(`留${selfKeepQty}`);
+          const moveText = moves.length ? moves.join(' / ') : '無異動';
+
+          return `
+            <div class="px-2.5 py-2 flex items-center justify-between gap-2">
+              <div class="min-w-0 flex-1">
+                <div class="font-bold text-[#4A3B32] truncate">${p.name}</div>
+                <div class="text-[10px] text-[#8C7A6B]">動向：${moveText}</div>
+              </div>
+              <div class="text-right shrink-0 tabular-nums">
+                <div class="font-bold ${soldRev > 0 ? 'text-emerald-700' : 'text-[#8C7A6B]'}">${fmtMoney(soldRev)}</div>
+                <div class="text-[10px] text-[#8C7A6B]">剩 ${p.stock}${p.unit}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const notes = (state.dailyNotes && state.dailyNotes[activeDate]) ? state.dailyNotes[activeDate] : [];
+      const notesBox = document.getElementById('dn-notes-box');
+      if (notes.length > 0) {
+        notesBox.classList.remove('hidden');
+        notesBox.innerHTML = `<span class="font-bold">📝 今日備注：</span>${notes.join(' / ')}`;
+      } else {
+        notesBox.classList.add('hidden');
+      }
+
+      document.getElementById('daily-narrative-modal').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    });
+    document.getElementById('close-daily-narrative-modal').addEventListener('click', () => document.getElementById('daily-narrative-modal').classList.add('hidden'));
 
     // Manual Today Adjustment Modal
     document.getElementById('open-manual-today-btn').addEventListener('click', () => {
@@ -2223,7 +2635,7 @@
 
       let story = '';
       if (notes.length > 0) {
-        story = notes[notes.length - 1];
+        story = notes.join(' ／ ');
       } else if (t.soldQty > 0 && starProduct) {
         story = `今日「${starProduct.name}」人氣滿滿，一共售出 ${t.soldQty} 件商品，把喜歡送到每個買家手上。`;
       } else {
@@ -2258,151 +2670,144 @@
       const mNum = parseInt(mm, 10);
       const dNum = parseInt(dd, 10);
 
-      // Split story into airy organic lines
+      // Split story into airy organic lines (supports multiple notes without cutting off)
       const chars = Array.from(data.story);
-      const line1 = chars.slice(0, 11).join('');
-      const line2 = chars.slice(11, 22).join('');
-      const line3 = chars.slice(22).join('');
+      const wrappedLines = [];
+      for (let i = 0; i < chars.length; i += 11) {
+        wrappedLines.push(chars.slice(i, i + 11).join(''));
+      }
+      const line1 = wrappedLines[0] || '';
+      const line2 = wrappedLines[1] || '';
+      const line3 = wrappedLines.slice(2).join('');
+      const allFloatingHtml = wrappedLines.map((ln, idx) => `<div style="padding-left:${(idx % 3) * 6}px">${floatText(ln, 4)}</div>`).join('');
 
       let cardHtml = '';
       if (layout === 0) {
-        // 版型 A：極簡手撕紙片 × 飄浮手寫字 (致敬參考圖風格)
+        // 版型 A：極簡手撕紙片 × 去背感描邊貼紙（文字不遮擋）
         cardHtml = `
-          <div id="polaroid-card" class="animate-print-out bg-[#FCF9F2] border border-[#E6DCCB] rounded-b-lg px-5 pt-5 pb-6 shadow-[0_10px_24px_rgba(74,59,50,0.12)] w-full max-w-[264px] min-h-[340px] relative overflow-hidden">
-            <!-- Top-left handwritten date -->
-            <div class="relative z-10 select-none">
-              <div class="flex items-start gap-1">
-                <span class="text-2xl leading-none text-[#4A3B32]">${mNum}</span>
-                <span class="text-xs text-[#8C7A6B] -mt-0.5">${mEng}</span>
+          <div id="polaroid-card" class="animate-print-out bg-[#FCF9F2] border border-[#E6DCCB] rounded-b-lg px-4 pt-4 pb-5 shadow-[0_10px_24px_rgba(74,59,50,0.12)] w-full max-w-[264px] min-h-[340px] relative overflow-hidden">
+            <div class="flex items-start justify-between relative z-10">
+              <div class="select-none">
+                <div class="flex items-start gap-1">
+                  <span class="text-2xl leading-none text-[#4A3B32]">${mNum}</span>
+                  <span class="text-xs text-[#8C7A6B] -mt-0.5">${mEng}</span>
+                </div>
+                <div class="text-2xl leading-none text-[#4A3B32] pl-3 -mt-1">/ ${dNum}</div>
               </div>
-              <div class="text-2xl leading-none text-[#4A3B32] pl-3 -mt-1">/ ${dNum}</div>
+              <div class="text-right text-[11px] text-[#4A3B32] leading-relaxed -rotate-2 pr-1">
+                <div class="scrap-gingham torn-paper px-2 py-0.5 inline-block">${floatText(`售出 ${data.t.soldQty} 件`, 3)}</div>
+                <div class="mt-0.5">${floatText(`結餘 ${fmtMoney(data.t.balance)}`, 4)}</div>
+              </div>
             </div>
 
-            <!-- Top-right pink gingham scrap + hollow circle stickers -->
-            <div class="scrap-gingham torn-paper w-16 h-28 absolute top-5 right-9 rotate-6 opacity-90"></div>
-            <div class="w-6 h-6 rounded-full border-2 border-[#A6C8E8] absolute top-6 right-7"></div>
-            <div class="w-5 h-5 rounded-full border-2 border-[#F5D77F] absolute top-28 right-20"></div>
-
-            <!-- Floating text along top-right scrap -->
-            <div class="relative z-10 mt-2 pl-24 text-xs text-[#4A3B32] leading-relaxed -rotate-2">
-              <div>${floatText(`今日賣出 ${data.t.soldQty} 件`, 4)}</div>
-              <div class="pl-4">${floatText(`淨利 ${fmtMoney(data.t.profit)}`, 5)}</div>
+            <!-- Translucent quote strip -->
+            <div class="relative z-10 mt-2.5 bg-white/80 border border-[#EFE7DA] px-2.5 py-1 -rotate-1 shadow-sm w-[94%]">
+              <span class="w-2 h-2 rounded-full bg-rose-400 inline-block absolute -top-1 left-6"></span>
+              <div class="text-[10px] text-[#8C7A6B] tracking-wide truncate">${data.moodTag} ・ ${data.p1.name}</div>
             </div>
 
-            <!-- Translucent quote strip with red dot -->
-            <div class="relative z-10 mt-3 -ml-1 bg-white/75 border border-[#EFE7DA] px-3 py-1.5 -rotate-2 shadow-sm w-[92%]">
-              <span class="w-2 h-2 rounded-full bg-rose-400 inline-block absolute -top-1 left-8"></span>
-              <div class="text-[10px] text-[#8C7A6B] tracking-wide">${data.moodTag} ・ ${data.p1.name}</div>
-            </div>
-
-            <!-- Center torn butter-yellow paper + cut-out product sticker + hand-drawn grid -->
-            <div class="relative mt-2 min-h-[165px]">
-              <div class="scrap-polka torn-paper w-24 h-24 absolute bottom-2 left-0 -rotate-3 opacity-85"></div>
-              <div class="w-6 h-6 rounded-full border border-dotted border-[#8C7A6B] absolute -bottom-1 left-3"></div>
-
-              <div class="bg-[#F8D889]/85 torn-paper w-40 min-h-[125px] ml-14 pt-3 px-3 pb-4 rotate-1 relative z-10">
-                <div class="text-xs leading-6 text-[#4A3B32]">
-                  <div>${floatText(line1, 4)}</div>
-                  <div class="pl-2">${floatText(line2, 4)}</div>
-                  ${line3 ? `<div class="pl-4">${floatText(line3, 4)}</div>` : ''}
+            <!-- Dedicated non-overlapping row: torn note on left + die-cut sticker on right -->
+            <div class="relative mt-3 flex items-start gap-2">
+              <div class="scrap-polka torn-paper w-16 h-16 absolute -bottom-2 -left-2 -rotate-3 opacity-70 pointer-events-none"></div>
+              <div class="bg-[#F8D889]/85 torn-paper flex-1 min-w-0 pt-2.5 px-3 pb-3 rotate-1 relative z-20">
+                <div class="text-[11px] leading-5 text-[#4A3B32] break-words">
+                  ${allFloatingHtml}
                 </div>
               </div>
-
-              <!-- Hand-drawn grid patch -->
-              <div class="scrap-grid w-24 h-12 absolute bottom-4 right-4 -rotate-6 opacity-55 z-10"></div>
-
-              <!-- Cut-out product sticker floating on the right edge -->
-              <div class="absolute top-2 -right-1 rotate-6 z-20 text-center">
-                <img src="${data.p1.image}" alt="${data.p1.name}" class="sticker-photo w-16 h-16 rounded-full object-cover" />
+              <div class="shrink-0 flex flex-col items-center rotate-6 z-10 pt-1">
+                <div class="sticker-diecut cutout-blob-1">
+                  <img src="${data.p1.image}" alt="${data.p1.name}" class="w-16 h-16 cutout-blob-1 object-cover block" />
+                </div>
                 <div class="text-[9px] text-[#8C7A6B] -rotate-3 mt-0.5">${floatText('↑今日主角', 3)}</div>
               </div>
-              <span class="w-2.5 h-2.5 rounded-full bg-[#D9D9D9] border border-[#8C7A6B] absolute bottom-2 left-32 z-20"></span>
             </div>
 
-            <!-- Bottom mini 3-frame film strip -->
-            <div class="relative z-10 mt-3 flex items-center justify-end gap-1.5">
-              <div class="text-[10px] text-[#8C7A6B] mr-auto -rotate-2">${floatText('小yo隨手貼 ✦', 3)}</div>
+            <!-- Bottom mini 3-frame strip -->
+            <div class="relative z-10 mt-3 flex items-center justify-between gap-1.5">
+              <div class="text-[10px] text-[#8C7A6B] -rotate-2">${floatText('小yo隨手貼 ✦', 3)}</div>
               <div class="bg-white p-1 shadow-sm border border-[#E6DCCB] flex gap-1 -rotate-2">
-                <img src="${data.storeImg}" alt="店舖" class="w-10 h-9 object-cover" />
-                <img src="${data.p2.image}" alt="選物" class="w-10 h-9 object-cover" />
-                <img src="${data.p3.image}" alt="選物" class="w-10 h-9 object-cover" />
+                <img src="${data.storeImg}" alt="店舖" class="w-9 h-8 object-cover cutout-blob-2" />
+                <img src="${data.p2.image}" alt="選物" class="w-9 h-8 object-cover cutout-blob-2" />
+                <img src="${data.p3.image}" alt="選物" class="w-9 h-8 object-cover cutout-blob-2" />
               </div>
-              <span class="w-2.5 h-2.5 rounded-full bg-[#A6C8E8] inline-block -ml-2 mt-6"></span>
             </div>
           </div>
         `;
       } else if (layout === 1) {
-        // 版型 B：留白散落貼紙 × 沿邊手寫筆記
+        // 版型 B：留白不規則手剪貼紙 × 清晰手寫筆記（文字不重疊）
         cardHtml = `
-          <div id="polaroid-card" class="animate-print-out bg-[#FAF8F3] border border-[#E6DCCB] rounded-b-lg px-5 pt-5 pb-6 shadow-[0_10px_24px_rgba(74,59,50,0.12)] w-full max-w-[264px] min-h-[340px] relative overflow-hidden">
-            <div class="flex items-center justify-between mb-3">
-              <div class="text-xl text-[#4A3B32] -rotate-3">${mNum}.${dNum} <span class="text-xs text-[#8C7A6B]">${mEng}</span></div>
-              <div class="text-[11px] text-[#8C7A6B] rotate-2">${floatText(data.moodTag, 3)}</div>
+          <div id="polaroid-card" class="animate-print-out bg-[#FAF8F3] border border-[#E6DCCB] rounded-b-lg px-4 pt-4 pb-5 shadow-[0_10px_24px_rgba(74,59,50,0.12)] w-full max-w-[264px] min-h-[340px] relative overflow-hidden">
+            <div class="flex items-center justify-between mb-2">
+              <div class="text-lg text-[#4A3B32] -rotate-3">${mNum}.${dNum} <span class="text-xs text-[#8C7A6B]">${mEng}</span></div>
+              <div class="text-[10px] text-[#8C7A6B] rotate-2">${floatText(data.moodTag, 3)}</div>
             </div>
 
-            <!-- Scattered cut-out photos with curved/tilted margin notes -->
-            <div class="relative h-48">
-              <div class="scrap-polka torn-paper w-28 h-24 absolute top-1 left-2 rotate-3 opacity-80"></div>
-              <img src="${data.p1.image}" alt="${data.p1.name}" class="sticker-photo w-24 h-24 rounded-2xl object-cover absolute top-4 left-6 -rotate-6 z-10" />
-              <div class="absolute top-3 left-32 text-[11px] text-[#4A3B32] rotate-3 leading-5">
-                <div>${floatText(`← ${data.p1.name}`, 4)}</div>
-                <div class="text-[#8C7A6B] pl-2">${floatText(`剩 ${data.p1.stock}${data.p1.unit}`, 3)}</div>
+            <!-- Top sticker collage area (strictly above text) -->
+            <div class="relative h-32 mb-2">
+              <div class="scrap-polka torn-paper w-24 h-20 absolute top-1 left-1 rotate-3 opacity-75"></div>
+              <div class="sticker-diecut cutout-blob-2 absolute top-3 left-4 -rotate-6 z-10">
+                <img src="${data.p1.image}" alt="${data.p1.name}" class="w-20 h-20 cutout-blob-2 object-cover block" />
               </div>
-
-              <div class="scrap-gingham torn-paper w-20 h-14 absolute bottom-2 right-4 -rotate-6 opacity-80"></div>
-              <img src="${data.p2.image}" alt="${data.p2.name}" class="sticker-photo w-16 h-16 rounded-full object-cover absolute bottom-5 right-8 rotate-6 z-10" />
-              <div class="absolute bottom-0 right-2 text-[10px] text-[#8C7A6B] -rotate-3">${floatText(`$${data.p2.sellPrice} 小可愛`, 3)}</div>
-            </div>
-
-            <!-- Torn yellow note with floating characters -->
-            <div class="bg-[#FFEFA8]/80 torn-paper px-4 py-3 mt-2 -rotate-1 relative">
-              <div class="text-xs leading-6 text-[#4A3B32]">
-                <div>${floatText(line1, 5)}</div>
-                <div class="pl-3">${floatText(line2, 5)}</div>
-                ${line3 ? `<div class="pl-1">${floatText(line3, 5)}</div>` : ''}
+              <div class="absolute top-2 left-28 right-0 text-[10px] text-[#4A3B32] rotate-2 leading-4">
+                <div>${floatText(`← ${data.p1.name}`, 3)}</div>
+                <div class="text-[#8C7A6B] pl-1">${floatText(`剩 ${data.p1.stock}${data.p1.unit}`, 3)}</div>
+              </div>
+              <div class="sticker-diecut cutout-blob-3 absolute bottom-0 right-2 rotate-6 z-10">
+                <img src="${data.p2.image}" alt="${data.p2.name}" class="w-12 h-12 cutout-blob-3 object-cover block" />
               </div>
             </div>
 
-            <div class="mt-4 flex items-center justify-between text-xs text-[#8C7A6B]">
+            <!-- Torn yellow note with floating characters (zero overlap) -->
+            <div class="bg-[#FFEFA8]/85 torn-paper px-3.5 py-2.5 -rotate-1 relative z-20">
+              <div class="text-[11px] leading-5 text-[#4A3B32] break-words">
+                ${allFloatingHtml}
+              </div>
+            </div>
+
+            <div class="mt-3 flex items-center justify-between text-xs text-[#8C7A6B]">
               <div class="flex items-center gap-1.5">
-                <img src="${data.storeImg}" alt="賣場" class="w-7 h-7 rounded-full border border-[#4A3B32] object-cover -rotate-6" />
-                <span class="rotate-2">${floatText(`今日 +${fmtMoney(data.t.profit)}`, 3)}</span>
+                <div class="sticker-diecut cutout-blob-1 -rotate-6">
+                  <img src="${data.storeImg}" alt="賣場" class="w-7 h-7 cutout-blob-1 object-cover block" />
+                </div>
+                <span class="rotate-2 text-[11px]">${floatText(`結餘 ${fmtMoney(data.t.balance)}`, 3)}</span>
               </div>
-              <div class="w-5 h-5 rounded-full border-2 border-[#E6A4B4]"></div>
+              <div class="w-4 h-4 rounded-full border-2 border-[#E6A4B4]"></div>
             </div>
           </div>
         `;
       } else {
-        // 版型 C：膠片長條 × 隨性紙膠帶拼貼
+        // 版型 C：手剪描邊貼紙 × 隨性紙膠帶拼貼（文字獨立區域）
         cardHtml = `
-          <div id="polaroid-card" class="animate-print-out bg-[#FFFDF9] border border-[#E6DCCB] rounded-b-lg px-5 pt-5 pb-6 shadow-[0_10px_24px_rgba(74,59,50,0.12)] w-full max-w-[264px] min-h-[340px] relative overflow-hidden">
-            <div class="scrap-grid w-20 h-20 absolute top-3 right-3 opacity-45 rotate-12"></div>
-            <div class="text-lg text-[#4A3B32] mb-1 -rotate-2">${floatText(`${yyyy}.${mm}.${dd}`, 3)}</div>
-            <div class="text-[11px] text-[#8C7A6B] mb-3 pl-2 rotate-1">${floatText(`售出 ${data.t.soldQty} 件・營業額 ${fmtMoney(data.t.rev)}`, 3)}</div>
+          <div id="polaroid-card" class="animate-print-out bg-[#FFFDF9] border border-[#E6DCCB] rounded-b-lg px-4 pt-4 pb-5 shadow-[0_10px_24px_rgba(74,59,50,0.12)] w-full max-w-[264px] min-h-[340px] relative overflow-hidden">
+            <div class="scrap-grid w-16 h-16 absolute top-2 right-2 opacity-35 rotate-12 pointer-events-none"></div>
+            <div class="text-base text-[#4A3B32] mb-0.5 -rotate-2">${floatText(`${yyyy}.${mm}.${dd}`, 3)}</div>
+            <div class="text-[10px] text-[#8C7A6B] mb-2.5 pl-1 rotate-1">${floatText(`售出 ${data.t.soldQty} 件・營業額 ${fmtMoney(data.t.rev)}`, 3)}</div>
 
-            <!-- Diagonal film collage -->
-            <div class="flex items-center justify-center gap-2 my-2">
-              <div class="bg-white p-1.5 shadow-md border border-[#E6DCCB] -rotate-3">
-                <img src="${data.p1.image}" alt="${data.p1.name}" class="w-24 h-24 object-cover" />
-                <div class="text-[9px] text-center text-[#8C7A6B] mt-1">${data.p1.name}</div>
+            <!-- Cutout sticker collage row -->
+            <div class="flex items-center justify-center gap-3 my-2">
+              <div class="sticker-diecut cutout-blob-2 -rotate-3">
+                <img src="${data.p1.image}" alt="${data.p1.name}" class="w-20 h-20 cutout-blob-2 object-cover block" />
               </div>
-              <div class="space-y-2 rotate-3">
-                <img src="${data.p3.image}" alt="${data.p3.name}" class="sticker-photo w-16 h-16 rounded-xl object-cover" />
-                <div class="text-[10px] text-[#4A3B32] -rotate-6">${floatText('今日選物 ✦', 4)}</div>
+              <div class="space-y-1.5 rotate-3 text-center">
+                <div class="sticker-diecut cutout-blob-3 inline-block">
+                  <img src="${data.p3.image}" alt="${data.p3.name}" class="w-14 h-14 cutout-blob-3 object-cover block" />
+                </div>
+                <div class="text-[10px] text-[#4A3B32] -rotate-3">${floatText('今日選物 ✦', 3)}</div>
               </div>
             </div>
 
-            <!-- Floating diary lines -->
-            <div class="mt-4 px-2 text-xs leading-6 text-[#4A3B32] rotate-1">
-              <div class="bg-[#E8F9F0]/80 inline-block px-2 py-0.5 rounded mb-1">${floatText(line1, 4)}</div>
-              <div class="pl-4">${floatText(line2, 4)}</div>
-              ${line3 ? `<div class="pl-8">${floatText(line3, 4)}</div>` : ''}
+            <!-- Floating diary lines (clean dedicated zone) -->
+            <div class="mt-3 px-1.5 text-[11px] leading-5 text-[#4A3B32] rotate-1 relative z-20">
+              <div class="bg-[#E8F9F0]/85 inline-block px-2 py-0.5 rounded mb-1">${floatText(line1, 3)}</div>
+              ${wrappedLines.slice(1).map((ln, idx) => `<div style="padding-left:${((idx + 1) % 3) * 6}px">${floatText(ln, 3)}</div>`).join('')}
             </div>
 
-            <div class="mt-5 flex items-center justify-between">
-              <div class="scrap-gingham torn-paper w-16 h-5 -rotate-6"></div>
-              <div class="text-[11px] text-emerald-700 font-bold rotate-2">${floatText(`淨利 ${fmtMoney(data.t.profit)}`, 3)}</div>
-              <img src="${data.storeImg}" alt="賣場" class="sticker-photo w-9 h-9 rounded-full object-cover rotate-6" />
+            <div class="mt-4 flex items-center justify-between">
+              <div class="scrap-gingham torn-paper w-14 h-4 -rotate-6"></div>
+              <div class="text-[11px] text-emerald-700 font-bold rotate-2">${floatText(`結餘 ${fmtMoney(data.t.balance)}`, 3)}</div>
+              <div class="sticker-diecut cutout-blob-1 rotate-6">
+                <img src="${data.storeImg}" alt="賣場" class="w-8 h-8 cutout-blob-1 object-cover block" />
+              </div>
             </div>
           </div>
         `;
@@ -2519,6 +2924,65 @@
         }, 'image/png');
       };
       mainImg.src = data.starImg;
+    });
+
+    // Export & Import JSON Backup
+    document.getElementById('export-backup-btn').addEventListener('click', async () => {
+      const todayISO = getTodayISO();
+      const fileName = `小yo記帳本備份_${todayISO}.json`;
+      const jsonStr = JSON.stringify(state, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+
+      if (navigator.share && navigator.canShare) {
+        try {
+          const file = new File([blob], fileName, { type: 'application/json' });
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({ files: [file], title: '小yo記帳本備份' });
+            showToast('已開啟儲存備份檔選單！');
+            return;
+          }
+        } catch (err) {
+          if (err && err.name === 'AbortError') return;
+        }
+      }
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast('已匯出帳本備份檔！');
+    });
+
+    document.getElementById('import-backup-input').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          const parsed = JSON.parse(ev.target.result);
+          if (!parsed || !Array.isArray(parsed.products) || !Array.isArray(parsed.sales)) {
+            showToast('這不是有效的「小yo記帳本」備份檔喔！', 'warn');
+            return;
+          }
+          state = parsed;
+          if (!state.selectedDate) state.selectedDate = getTodayISO();
+          if (!state.selectedMonth) state.selectedMonth = state.selectedDate.slice(0, 7);
+          if (!state.restocks) state.restocks = [];
+          if (!state.dailyNotes) state.dailyNotes = {};
+          if (!state.chatHistory) state.chatHistory = [];
+          saveState();
+          renderAll();
+          showToast('已成功匯入還原所有帳本資料！');
+        } catch (err) {
+          showToast('讀取備份檔失敗，請確認檔案格式正確', 'warn');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
     });
 
     window.addEventListener('DOMContentLoaded', () => {
