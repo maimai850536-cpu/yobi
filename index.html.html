@@ -364,45 +364,50 @@
   <main class="max-w-5xl mx-auto px-4 pt-5">
     <!-- TAB 1: 小yo AI對話記帳 -->
     <section id="view-chat" class="space-y-5">
-      <!-- Quick Overview Strip (2x3 mobile, 3x2 tablet/desktop) -->
+      <!-- Quick Overview Strip (all 6 cards clickable for full breakdown) -->
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <div class="journal-card bg-[#FFF8D6] p-3.5 flex flex-col justify-between">
-          <div class="text-xs text-[#8C7A6B] flex items-center gap-1 whitespace-nowrap">
-            <i data-lucide="sun" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i><span id="chat-kpi-day-label">當日結餘</span>
+        <button type="button" data-kpi-detail="today-balance" class="journal-card bg-[#FFF8D6] hover:bg-[#fff2bd] p-3.5 flex flex-col justify-between text-left transition cursor-pointer">
+          <div class="text-xs text-[#8C7A6B] flex items-center justify-between gap-1 whitespace-nowrap w-full">
+            <span class="flex items-center gap-1"><i data-lucide="sun" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i><span id="chat-kpi-day-label">當日結餘</span></span>
+            <span class="text-[10px] text-amber-700">明細›</span>
           </div>
           <div id="chat-kpi-today-balance" class="text-xl sm:text-2xl font-bold tabular-nums mt-1.5">$0</div>
-        </div>
-        <div class="journal-card bg-[#E8F9F0] p-3.5 flex flex-col justify-between">
-          <div class="text-xs text-[#8C7A6B] flex items-center gap-1 whitespace-nowrap">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i><span>當月結餘</span>
+        </button>
+        <button type="button" data-kpi-detail="month-balance" class="journal-card bg-[#E8F9F0] hover:bg-[#d8f5e6] p-3.5 flex flex-col justify-between text-left transition cursor-pointer">
+          <div class="text-xs text-[#8C7A6B] flex items-center justify-between gap-1 whitespace-nowrap w-full">
+            <span class="flex items-center gap-1"><i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i><span>當月結餘</span></span>
+            <span class="text-[10px] text-emerald-700">明細›</span>
           </div>
           <div id="chat-kpi-month-balance" class="text-xl sm:text-2xl font-bold tabular-nums mt-1.5">$0</div>
-        </div>
-        <div class="journal-card bg-[#EEF7FF] p-3.5 flex flex-col justify-between">
-          <div class="text-xs text-[#8C7A6B] flex items-center gap-1 whitespace-nowrap">
-            <i data-lucide="trending-up" class="w-3.5 h-3.5 text-sky-600 shrink-0"></i><span>當月總營業額</span>
+        </button>
+        <button type="button" data-kpi-detail="month-rev" class="journal-card bg-[#EEF7FF] hover:bg-[#deeffe] p-3.5 flex flex-col justify-between text-left transition cursor-pointer">
+          <div class="text-xs text-[#8C7A6B] flex items-center justify-between gap-1 whitespace-nowrap w-full">
+            <span class="flex items-center gap-1"><i data-lucide="trending-up" class="w-3.5 h-3.5 text-sky-600 shrink-0"></i><span>當月總營業額</span></span>
+            <span class="text-[10px] text-sky-700">明細›</span>
           </div>
           <div id="chat-kpi-month-rev" class="text-xl sm:text-2xl font-bold tabular-nums mt-1.5">$0</div>
-        </div>
-        <button type="button" id="jump-store-expense-btn" class="journal-card bg-[#FFF1EE] hover:bg-[#ffe5e0] p-3.5 flex flex-col justify-between text-left transition cursor-pointer" title="點擊查看與管理進貨支出明細">
+        </button>
+        <button type="button" data-kpi-detail="store-expense" class="journal-card bg-[#FFF1EE] hover:bg-[#ffe5e0] p-3.5 flex flex-col justify-between text-left transition cursor-pointer">
           <div class="text-xs text-[#8C7A6B] flex items-center justify-between gap-1 whitespace-nowrap w-full">
             <span class="flex items-center gap-1"><i data-lucide="receipt" class="w-3.5 h-3.5 text-rose-500 shrink-0"></i><span>本商店總支出</span></span>
             <span class="text-[10px] text-rose-500">明細›</span>
           </div>
           <div id="chat-kpi-store-expense" class="text-xl sm:text-2xl font-bold tabular-nums text-rose-700 mt-1.5">$0</div>
         </button>
-        <div class="journal-card bg-[#F3EEFF] p-3.5 flex flex-col justify-between">
-          <div class="text-xs text-[#8C7A6B] flex items-center gap-1 whitespace-nowrap">
-            <i data-lucide="coins" class="w-3.5 h-3.5 text-violet-600 shrink-0"></i><span>本商店總收益</span>
+        <button type="button" data-kpi-detail="store-revenue" class="journal-card bg-[#F3EEFF] hover:bg-[#eae0ff] p-3.5 flex flex-col justify-between text-left transition cursor-pointer">
+          <div class="text-xs text-[#8C7A6B] flex items-center justify-between gap-1 whitespace-nowrap w-full">
+            <span class="flex items-center gap-1"><i data-lucide="coins" class="w-3.5 h-3.5 text-violet-600 shrink-0"></i><span>本商店總收益</span></span>
+            <span class="text-[10px] text-violet-700">明細›</span>
           </div>
           <div id="chat-kpi-store-revenue" class="text-xl sm:text-2xl font-bold tabular-nums text-violet-800 mt-1.5">$0</div>
-        </div>
-        <div class="journal-card bg-white border-[#4A3B32] p-3.5 flex flex-col justify-between">
-          <div class="text-xs text-[#4A3B32] font-bold flex items-center gap-1 whitespace-nowrap">
-            <i data-lucide="wallet" class="w-3.5 h-3.5 text-emerald-700 shrink-0"></i><span>本店累積結餘</span>
+        </button>
+        <button type="button" data-kpi-detail="store-balance" class="journal-card bg-white hover:bg-[#FDFBF7] border-[#4A3B32] p-3.5 flex flex-col justify-between text-left transition cursor-pointer">
+          <div class="text-xs text-[#4A3B32] font-bold flex items-center justify-between gap-1 whitespace-nowrap w-full">
+            <span class="flex items-center gap-1"><i data-lucide="wallet" class="w-3.5 h-3.5 text-emerald-700 shrink-0"></i><span>本店累積結餘</span></span>
+            <span class="text-[10px] text-emerald-700">明細›</span>
           </div>
           <div id="chat-kpi-store-balance" class="text-xl sm:text-2xl font-bold tabular-nums mt-1.5">$0</div>
-        </div>
+        </button>
       </div>
 
       <!-- Chat Window -->
@@ -468,6 +473,20 @@
           </button>
         </form>
       </div>
+
+      <!-- Daily Real-Time Activity Log (幾月幾號即時動態) -->
+      <div class="journal-card p-4 sm:p-5">
+        <div class="flex items-center justify-between border-b border-dashed border-[#E6DCCB] pb-2.5 mb-3">
+          <div class="flex items-center gap-2">
+            <i data-lucide="history" class="w-4 h-4 text-amber-600 shrink-0"></i>
+            <h3 id="activity-log-title" class="text-sm sm:text-base font-bold">11月22日 即時動態</h3>
+          </div>
+          <span class="text-[11px] text-[#8C7A6B]">方便查帳・點垃圾桶可撤銷動作</span>
+        </div>
+        <div id="activity-log-list" class="space-y-2 max-h-60 overflow-y-auto">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
     </section>
 
     <!-- TAB 2: 商品與貨況 -->
@@ -510,18 +529,18 @@
             <span id="report-today-count" class="sticker-badge bg-white whitespace-nowrap shrink-0">0筆 / 0件</span>
           </div>
           <div class="grid grid-cols-3 gap-2.5 text-center">
-            <div class="bg-white rounded-2xl p-2.5 sm:p-3 border border-[#E6DCCB] flex flex-col justify-between items-center">
-              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">當日營業額</div>
+            <button type="button" data-kpi-detail="today-products" class="bg-white hover:bg-[#FFF8D6]/50 rounded-2xl p-2.5 sm:p-3 border border-[#E6DCCB] flex flex-col justify-between items-center cursor-pointer transition">
+              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">當日營業額 ›</div>
               <div id="report-today-rev" class="text-base sm:text-lg font-bold tabular-nums mt-1.5">$0</div>
-            </div>
-            <div class="bg-[#FFF1EE] rounded-2xl p-2.5 sm:p-3 border border-[#E6DCCB] flex flex-col justify-between items-center">
-              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">當日支出</div>
+            </button>
+            <button type="button" data-kpi-detail="today-products" class="bg-[#FFF1EE] hover:bg-[#ffe5e0] rounded-2xl p-2.5 sm:p-3 border border-[#E6DCCB] flex flex-col justify-between items-center cursor-pointer transition">
+              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">當日支出 ›</div>
               <div id="report-today-expense" class="text-base sm:text-lg font-bold tabular-nums text-rose-600 mt-1.5">$0</div>
-            </div>
-            <div class="bg-[#E8F9F0] rounded-2xl p-2.5 sm:p-3 border border-[#4A3B32] flex flex-col justify-between items-center">
-              <div class="text-[11px] sm:text-xs text-[#4A3B32] whitespace-nowrap">當日結餘</div>
+            </button>
+            <button type="button" data-kpi-detail="today-products" class="bg-[#E8F9F0] hover:bg-[#d8f5e6] rounded-2xl p-2.5 sm:p-3 border border-[#4A3B32] flex flex-col justify-between items-center cursor-pointer transition">
+              <div class="text-[11px] sm:text-xs text-[#4A3B32] whitespace-nowrap">當日結餘 ›</div>
               <div id="report-today-balance" class="text-base sm:text-lg font-bold tabular-nums mt-1.5">$0</div>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -539,22 +558,22 @@
             <span id="report-month-count" class="sticker-badge bg-white whitespace-nowrap shrink-0">0件售出</span>
           </div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
-            <div class="bg-white rounded-2xl p-2.5 border border-[#E6DCCB] flex flex-col justify-between items-center">
-              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">當月營業額</div>
+            <button type="button" data-kpi-detail="month-rev" class="bg-white hover:bg-[#EEF7FF] rounded-2xl p-2.5 border border-[#E6DCCB] flex flex-col justify-between items-center cursor-pointer transition">
+              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">當月營業額 ›</div>
               <div id="report-month-rev" class="text-base sm:text-lg font-bold tabular-nums mt-1.5">$0</div>
-            </div>
-            <div class="bg-[#E8F9F0] rounded-2xl p-2.5 border border-[#4A3B32] flex flex-col justify-between items-center">
-              <div class="text-[11px] sm:text-xs text-[#4A3B32] whitespace-nowrap">當月結餘</div>
+            </button>
+            <button type="button" data-kpi-detail="month-balance" class="bg-[#E8F9F0] hover:bg-[#d8f5e6] rounded-2xl p-2.5 border border-[#4A3B32] flex flex-col justify-between items-center cursor-pointer transition">
+              <div class="text-[11px] sm:text-xs text-[#4A3B32] whitespace-nowrap">當月結餘 ›</div>
               <div id="report-month-balance" class="text-base sm:text-lg font-bold tabular-nums mt-1.5">$0</div>
-            </div>
-            <div class="bg-[#FFF1EE] rounded-2xl p-2.5 border border-[#E6DCCB] flex flex-col justify-between items-center">
-              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">本商店總支出</div>
+            </button>
+            <button type="button" data-kpi-detail="store-expense" class="bg-[#FFF1EE] hover:bg-[#ffe5e0] rounded-2xl p-2.5 border border-[#E6DCCB] flex flex-col justify-between items-center cursor-pointer transition">
+              <div class="text-[11px] sm:text-xs text-[#8C7A6B] whitespace-nowrap">本商店總支出 ›</div>
               <div id="report-store-expense" class="text-base sm:text-lg font-bold tabular-nums text-rose-600 mt-1.5">$0</div>
-            </div>
-            <div class="bg-[#F3EEFF] rounded-2xl p-2.5 border border-[#4A3B32] flex flex-col justify-between items-center">
-              <div class="text-[11px] sm:text-xs text-[#4A3B32] whitespace-nowrap">本店累積結餘</div>
+            </button>
+            <button type="button" data-kpi-detail="store-balance" class="bg-[#F3EEFF] hover:bg-[#eae0ff] rounded-2xl p-2.5 border border-[#4A3B32] flex flex-col justify-between items-center cursor-pointer transition">
+              <div class="text-[11px] sm:text-xs text-[#4A3B32] whitespace-nowrap">本店累積結餘 ›</div>
               <div id="report-store-balance" class="text-base sm:text-lg font-bold tabular-nums mt-1.5">$0</div>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -939,6 +958,20 @@
     </div>
   </div>
 
+  <!-- Modal: 數字組成明細彈窗 -->
+  <div id="kpi-detail-modal" class="fixed inset-0 z-[55] hidden modal-backdrop flex items-center justify-center p-3">
+    <div class="journal-card w-full max-w-md p-4 sm:p-5 bg-[#FDFBF7] max-h-[88vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-dashed border-[#DFD5C3] pb-2.5 mb-3 shrink-0">
+        <h3 id="kpi-detail-title" class="text-base sm:text-lg font-bold">帳務組成明細</h3>
+        <button id="close-kpi-detail-modal" class="p-1 rounded-lg hover:bg-[#FFF8D6]" title="關閉">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="kpi-detail-formula" class="bg-white border border-[#E6DCCB] rounded-2xl p-3 mb-3 text-xs shrink-0"></div>
+      <div id="kpi-detail-body" class="space-y-2 overflow-y-auto flex-1 pr-0.5"></div>
+    </div>
+  </div>
+
   <!-- Modal: 刪除對話並恢復原狀 -->
   <div id="delete-chat-modal" class="fixed inset-0 z-[60] hidden modal-backdrop flex items-center justify-center p-4">
     <div class="journal-card w-full max-w-sm p-5">
@@ -1021,6 +1054,7 @@
         selectedDate: todayStr,
         storeLogo: DEFAULT_IMAGES.xiaoyo,
         dailyNotes: {},
+        activityLog: [],
         products: [],
         sales: [],
         restocks: [],
@@ -1036,6 +1070,19 @@
 
     let state = loadState();
     if (!state.selectedDate) state.selectedDate = getTodayISO();
+    if (!Array.isArray(state.activityLog)) state.activityLog = [];
+
+    function pushActivity(date, label, deltaText, undoData = null) {
+      if (!Array.isArray(state.activityLog)) state.activityLog = [];
+      state.activityLog.unshift({
+        id: 'act_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        date,
+        time: new Date().toTimeString().slice(0, 5),
+        label,
+        deltaText,
+        undoData
+      });
+    }
     let calendarViewMonth = state.selectedMonth || state.selectedDate.slice(0, 7);
     let calendarTargetMode = 'main';
     let profitChart = null;
@@ -1224,7 +1271,7 @@
           `🏪 本商店累計：總支出 ${fmtMoney(st.totalExpense)}，總收益 ${fmtMoney(st.totalRevenue)}！`;
       } else {
         const hasExplicitQty = /(\d+|[一二兩三四五六七八九十]+)\s*(隻|只|個|件|組|盒|包|張|份|本)/.test(text) || /(賣出|售出|進貨|補貨|自留)\s*(\d+|[一二兩三四五六七八九十]+)/.test(text);
-        const isSelfKeep = /(自留|自己留|自己買|留一個|留用)/.test(text) && hasExplicitQty;
+        const isSelfKeep = /(自留|自己留|自己買|留一個|留用)/.test(text) && (hasExplicitQty || /^(?:我)?(?:自留|自己留|自己買)/.test(text));
         const isRestock = /(進貨|補貨|買進|叫貨)/.test(text) && hasExplicitQty;
         const isSale = /(賣出|售出|賣掉|出貨|賣了)/.test(text) && hasExplicitQty;
         const product = findMatchingProduct(text);
@@ -1235,6 +1282,7 @@
           if (!state.dailyNotes[activeDate]) state.dailyNotes[activeDate] = [];
           state.dailyNotes[activeDate].push(text);
           actionRecord = { kind: 'dailyNote', date: activeDate, text };
+          pushActivity(activeDate, `新增拍立得備注`, `「${text.slice(0, 14)}${text.length > 14 ? '...' : ''}」`, actionRecord);
           replyText = `小yo已經把這段店舖心情記進 ${activeDate} 的「📷 拍立得快照」裡囉！✨`;
           showToast('已記錄到今日店舖快照！');
         } else if (!product) {
@@ -1258,6 +1306,7 @@
             isSelfKeep: true
           });
           actionRecord = { kind: 'restock', id: rid, productId: product.id, qty, isSelfKeep: true };
+          pushActivity(activeDate, `${product.name} 自留 ${qty} ${product.unit}`, `庫存 -${qty}`, actionRecord);
 
           const stockNote = prevStock < qty ? `（原庫存僅 ${prevStock} ${product.unit}，已扣至 0）` : '';
           replyText = `好喔！已幫你登記自留 ${qty} ${product.unit}「${product.name}」🐶✨${stockNote}\n庫存已減為 ${product.stock} ${product.unit}（進貨成本已包含在總支出中，不增加利潤與收益）！`;
@@ -1297,6 +1346,7 @@
             note: '小yo對話進貨'
           });
           actionRecord = { kind: 'restock', id: rid, productId: product.id, qty, isSelfKeep: false };
+          pushActivity(activeDate, `${product.name} 進貨 ${qty} ${product.unit}`, `-${fmtMoney(qty * unitCost)} / 庫存 +${qty}`, actionRecord);
 
           const totalSpend = qty * unitCost;
           replyText = `收到！小yo已經幫你把「${product.name}」進貨入庫囉 📦`;
@@ -1319,6 +1369,7 @@
           if (!state.dailyNotes[activeDate]) state.dailyNotes[activeDate] = [];
           state.dailyNotes[activeDate].push(text);
           actionRecord = { kind: 'productNote', productId: product.id, entry, date: activeDate, text };
+          pushActivity(activeDate, `新增「${product.name}」備注`, `不影響金額`, actionRecord);
           replyText = `收到！沒有變動庫存與金額，小yo已經幫你把這句記進「${product.name}」的商品備注欄囉 📝✨`;
           showToast(`已加入「${product.name}」備注欄！`);
         } else {
@@ -1345,6 +1396,7 @@
             saleTime
           });
           actionRecord = { kind: 'sale', id: sid, productId: product.id, qty };
+          pushActivity(activeDate, `${product.name} 售出 ${qty} ${product.unit}`, `+${fmtMoney(product.sellPrice * qty)} / 庫存 -${qty}`, actionRecord);
 
           const lowWarn = product.stock <= product.lowStockThreshold ? `\n⚠️ 小提醒：「${product.name}」目前只剩 ${product.stock} ${product.unit}，記得準備補貨喔！` : '';
           const stockShortNote = prevStock < qty ? `（原庫存僅 ${prevStock} ${product.unit}，已扣至 0）` : '';
@@ -1743,9 +1795,83 @@
       }).join('');
     }
 
+    function renderActivityLog() {
+      const activeDate = state.selectedDate || getTodayISO();
+      const [, mm, dd] = activeDate.split('-');
+      const titleEl = document.getElementById('activity-log-title');
+      if (titleEl) titleEl.textContent = `${parseInt(mm, 10)}月${parseInt(dd, 10)}日 即時動態`;
+
+      const listEl = document.getElementById('activity-log-list');
+      if (!listEl) return;
+      const items = (state.activityLog || []).filter(a => a.date === activeDate);
+      if (items.length === 0) {
+        listEl.innerHTML = `<div class="text-center py-4 text-xs text-[#8C7A6B]">${parseInt(mm, 10)}月${parseInt(dd, 10)}日尚無操作動態</div>`;
+        return;
+      }
+      listEl.innerHTML = items.map(a => `
+        <div class="flex items-center justify-between gap-2 bg-[#FDFBF7] border border-[#E6DCCB] rounded-xl px-3 py-2 text-xs">
+          <div class="min-w-0 flex-1">
+            <div class="font-bold text-[#4A3B32] truncate">${a.label}</div>
+            <div class="text-[10px] text-[#8C7A6B] tabular-nums">${a.time} ・ ${a.deltaText}</div>
+          </div>
+          <button type="button" data-undo-activity="${a.id}" class="p-1.5 rounded-lg text-[#B5A698] hover:text-rose-600 hover:bg-[#FFF1EE] shrink-0" title="刪除此動作並復原帳務">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('activity-log-list').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-undo-activity]');
+      if (!btn) return;
+      const aid = btn.dataset.undoActivity;
+      const act = (state.activityLog || []).find(a => a.id === aid);
+      if (!act) return;
+
+      const rec = act.undoData;
+      if (rec) {
+        if (rec.kind === 'sale') {
+          const sale = state.sales.find(s => s.id === rec.id);
+          if (sale) {
+            const prod = state.products.find(p => p.id === rec.productId);
+            if (prod) prod.stock += sale.qty;
+            state.sales = state.sales.filter(s => s.id !== rec.id);
+          }
+        } else if (rec.kind === 'restock') {
+          const r = state.restocks.find(item => item.id === rec.id);
+          if (r) {
+            const prod = state.products.find(p => p.id === rec.productId);
+            if (prod) {
+              if (rec.isSelfKeep) prod.stock += r.qty;
+              else prod.stock = Math.max(0, prod.stock - r.qty);
+            }
+            state.restocks = state.restocks.filter(item => item.id !== rec.id);
+          }
+        } else if (rec.kind === 'productNote') {
+          const prod = state.products.find(p => p.id === rec.productId);
+          if (prod && prod.note) {
+            prod.note = prod.note.split('\n').filter(line => line !== rec.entry).join('\n');
+          }
+          if (state.dailyNotes && state.dailyNotes[rec.date]) {
+            state.dailyNotes[rec.date] = state.dailyNotes[rec.date].filter(n => n !== rec.text);
+          }
+        } else if (rec.kind === 'dailyNote') {
+          if (state.dailyNotes && state.dailyNotes[rec.date]) {
+            state.dailyNotes[rec.date] = state.dailyNotes[rec.date].filter(n => n !== rec.text);
+          }
+        }
+      }
+
+      state.activityLog = state.activityLog.filter(a => a.id !== aid);
+      saveState();
+      renderAll();
+      showToast(rec ? '已撤銷該動作並恢復庫存與金額！' : '已刪除該筆動態紀錄');
+    });
+
     function renderAll() {
       renderKPIs();
       renderChat();
+      renderActivityLog();
       renderProducts();
       renderReports();
       renderRestocksList();
@@ -1934,19 +2060,27 @@
           showToast(`「${p.name}」庫存為 0，請先補貨喔！`, 'warn');
           return;
         }
+        if ((Number(p.sellPrice) || 0) <= 0) {
+          showToast(`「${p.name}」尚未設定售價，請先點「編輯」設定售價喔！`, 'warn');
+          return;
+        }
+        const activeDate = state.selectedDate || getTodayISO();
+        const nowTime = new Date().toTimeString().slice(0, 5);
+        const sid = 's_' + Date.now();
         p.stock -= 1;
         state.sales.unshift({
-          id: 's_' + Date.now(),
+          id: sid,
           productId: p.id,
           productName: p.name,
           qty: 1,
           unitCost: p.costPrice,
           unitPrice: p.sellPrice,
-          saleTime: getNowDateTimeLocal()
+          saleTime: `${activeDate}T${nowTime}`
         });
+        pushActivity(activeDate, `${p.name} 售出 1 ${p.unit} (按鈕)`, `+${fmtMoney(p.sellPrice)} / 庫存 -1`, { kind: 'sale', id: sid, productId: p.id, qty: 1 });
         saveState();
         renderAll();
-        showToast(`已記帳：賣出 1 ${p.unit} ${p.name}（淨利 ${fmtMoney(p.sellPrice - p.costPrice)}）`);
+        showToast(`已記在 ${activeDate}：賣出 1 ${p.unit} ${p.name}（+${fmtMoney(p.sellPrice)}）`);
       } else if (action === 'quick-restock') {
         openRestockModal(p.id);
       } else if (action === 'edit-product') {
@@ -1960,7 +2094,7 @@
 
     function openDeleteProductModal(p) {
       pendingDeleteProductId = p.id;
-      document.getElementById('delete-product-msg').textContent = `確定要從貨架刪除「${p.name}」嗎？刪除後無法復原（歷史銷售明細仍會保留在報表中）。`;
+      document.getElementById('delete-product-msg').textContent = `確定要刪除「${p.name}」嗎？刪除後會同步移除該商品所有日期的售出、進貨與支出紀錄，首頁結餘與報表都會一併更新！`;
       document.getElementById('delete-product-modal').classList.remove('hidden');
       if (window.lucide) lucide.createIcons();
     }
@@ -2049,11 +2183,14 @@
     document.getElementById('confirm-delete-product-btn').addEventListener('click', () => {
       if (!pendingDeleteProductId) return;
       const target = state.products.find(p => p.id === pendingDeleteProductId);
-      state.products = state.products.filter(p => p.id !== pendingDeleteProductId);
+      const pid = pendingDeleteProductId;
+      state.products = state.products.filter(p => p.id !== pid);
+      state.sales = state.sales.filter(s => s.productId !== pid && (!target || s.productName !== target.name));
+      state.restocks = state.restocks.filter(r => r.productId !== pid && (!target || r.productName !== target.name));
       saveState();
       closeDeleteProductModal();
       renderAll();
-      if (target) showToast(`已刪除商品「${target.name}」`);
+      if (target) showToast(`已刪除「${target.name}」並同步清除所有相關帳務紀錄`);
     });
 
     // Product Modal
@@ -2142,11 +2279,12 @@
           note,
           image: modalTempImage
         });
+        const activeDate = state.selectedDate || getTodayISO();
         if (stock > 0 && costPrice > 0) {
-          const activeDate = state.selectedDate || getTodayISO();
           const nowTime = new Date().toTimeString().slice(0, 5);
+          const rid = 'r_' + Date.now();
           state.restocks.unshift({
-            id: 'r_' + Date.now(),
+            id: rid,
             productId: newId,
             productName: name,
             qty: stock,
@@ -2154,8 +2292,10 @@
             restockTime: `${activeDate}T${nowTime}`,
             note: '初始進貨入庫'
           });
+          pushActivity(activeDate, `新增「${name}」並初始進貨 ${stock} ${unit}`, `-${fmtMoney(stock * costPrice)} / 庫存 +${stock}`, { kind: 'restock', id: rid, productId: newId, qty: stock, isSelfKeep: false });
           showToast(`已新增「${name}」並自動計入進貨成本 ${fmtMoney(stock * costPrice)}`);
         } else {
+          pushActivity(activeDate, `新增商品「${name}」`, `庫存 ${stock} ${unit}`, null);
           showToast(`已新增商品「${name}」`);
         }
       }
@@ -2232,8 +2372,9 @@
 
       p.stock += qty;
       p.costPrice = unitCost;
+      const rid = 'r_' + Date.now();
       state.restocks.unshift({
-        id: 'r_' + Date.now(),
+        id: rid,
         productId: p.id,
         productName: p.name,
         qty,
@@ -2241,6 +2382,7 @@
         restockTime,
         note
       });
+      pushActivity(dPart, `${p.name} 補貨 ${qty} ${p.unit}`, `-${fmtMoney(qty * unitCost)} / 庫存 +${qty}`, { kind: 'restock', id: rid, productId: p.id, qty, isSelfKeep: false });
 
       saveState();
       document.getElementById('restock-modal').classList.add('hidden');
@@ -2358,12 +2500,217 @@
     document.getElementById('close-detail-modal').addEventListener('click', () => document.getElementById('detail-modal').classList.add('hidden'));
 
     // Report Day Filter & Delete Handlers
-    document.getElementById('jump-store-expense-btn').addEventListener('click', () => {
-      document.querySelector('[data-tab="reports"]').click();
-      setTimeout(() => {
-        const sec = document.getElementById('store-expense-section');
-        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 60);
+    // Universal KPI Detail Breakdown Modal
+    let currentKpiDetailMode = null;
+
+    function openKpiDetailModal(mode) {
+      currentKpiDetailMode = mode;
+      const activeDate = state.selectedDate || getTodayISO();
+      const t = getTodayMetrics();
+      const m = getMonthMetrics(state.selectedMonth);
+      const st = getStoreTotals();
+      const titleEl = document.getElementById('kpi-detail-title');
+      const formulaEl = document.getElementById('kpi-detail-formula');
+      const bodyEl = document.getElementById('kpi-detail-body');
+
+      const renderLedgerRows = (entries) => {
+        if (!entries.length) return '<div class="text-center py-6 text-xs text-[#8C7A6B]">目前沒有進出帳紀錄</div>';
+        return entries.map(item => `
+          <div class="flex items-center justify-between gap-2 bg-white border border-[#E6DCCB] rounded-xl px-3 py-2 text-xs">
+            <div class="min-w-0">
+              <div class="font-bold truncate">${item.title}</div>
+              <div class="text-[10px] text-[#8C7A6B] tabular-nums">${item.time} ${item.sub ? '・' + item.sub : ''}</div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="font-bold tabular-nums ${item.amount >= 0 ? 'text-emerald-700' : 'text-rose-700'}">${item.amount >= 0 ? '+' : ''}${fmtMoney(item.amount)}</span>
+              ${item.delType ? `<button type="button" data-kpi-del-type="${item.delType}" data-kpi-del-id="${item.id}" class="p-1 rounded-lg text-[#B5A698] hover:text-rose-600 hover:bg-[#FFF1EE]" title="刪除此筆並重算"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>` : ''}
+            </div>
+          </div>
+        `).join('');
+      };
+
+      const toSaleEntry = s => ({
+        id: s.id,
+        delType: 'sale',
+        time: s.saleTime.replace('T', ' '),
+        sortKey: s.saleTime,
+        title: `${s.productName} × ${s.qty} (售出)`,
+        sub: `單價 ${fmtMoney(s.unitPrice)}`,
+        amount: s.unitPrice * s.qty
+      });
+
+      const toRestockEntry = r => {
+        const isSK = r.isSelfKeep || (r.note && r.note.includes('店主自留'));
+        return {
+          id: r.id,
+          delType: 'restock',
+          time: r.restockTime.replace('T', ' '),
+          sortKey: r.restockTime,
+          title: `${r.productName} × ${r.qty} (${isSK ? '自留' : '進貨'})`,
+          sub: isSK ? '成本已計入進貨' : `單件 ${fmtMoney(r.unitCost)}`,
+          amount: -(r.unitCost * r.qty)
+        };
+      };
+
+      if (mode === 'today-products') {
+        // 當日盈利報表點進去：商品名 + 成本/售價 + 進貨x、售出x
+        titleEl.textContent = `當日商品進出明細 (${activeDate})`;
+        formulaEl.innerHTML = `
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div><div class="text-[10px] text-[#8C7A6B]">當日營業額</div><div class="font-bold tabular-nums">${fmtMoney(t.rev)}</div></div>
+            <div><div class="text-[10px] text-[#8C7A6B]">當日支出</div><div class="font-bold text-rose-700 tabular-nums">-${fmtMoney(t.restockExpense)}</div></div>
+            <div><div class="text-[10px] text-[#8C7A6B]">當日結餘</div><div class="font-bold tabular-nums ${t.balance >= 0 ? 'text-emerald-700' : 'text-rose-700'}">${fmtMoney(t.balance)}</div></div>
+          </div>
+        `;
+        const todayRestocks = state.restocks.filter(r => r.restockTime.startsWith(activeDate));
+        const prodMap = new Map();
+        state.products.forEach(p => {
+          prodMap.set(p.id, { name: p.name, cost: p.costPrice, price: p.sellPrice, unit: p.unit, inQty: 0, outQty: 0, skQty: 0, rev: 0, spend: 0 });
+        });
+        t.todaySales.forEach(s => {
+          const key = s.productId || s.productName;
+          if (!prodMap.has(key)) prodMap.set(key, { name: s.productName, cost: s.unitCost, price: s.unitPrice, unit: '個', inQty: 0, outQty: 0, skQty: 0, rev: 0, spend: 0 });
+          const row = prodMap.get(key);
+          row.outQty += s.qty;
+          row.rev += s.unitPrice * s.qty;
+        });
+        todayRestocks.forEach(r => {
+          const key = r.productId || r.productName;
+          if (!prodMap.has(key)) prodMap.set(key, { name: r.productName, cost: r.unitCost, price: 0, unit: '個', inQty: 0, outQty: 0, skQty: 0, rev: 0, spend: 0 });
+          const row = prodMap.get(key);
+          const isSK = r.isSelfKeep || (r.note && r.note.includes('店主自留'));
+          if (isSK) row.skQty += r.qty;
+          else { row.inQty += r.qty; row.spend += r.unitCost * r.qty; }
+        });
+        const rows = Array.from(prodMap.values());
+        bodyEl.innerHTML = rows.length ? rows.map(r => `
+          <div class="bg-white border border-[#E6DCCB] rounded-xl px-3 py-2.5 text-xs flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <div class="font-bold truncate">${r.name}</div>
+              <div class="text-[11px] text-[#8C7A6B]">成本 ${fmtMoney(r.cost)} ／ 售價 ${fmtMoney(r.price)}</div>
+              <div class="text-[11px] text-[#4A3B32] mt-0.5">進貨 <b>${r.inQty}</b>${r.unit} ・ 售出 <b>${r.outQty}</b>${r.unit}${r.skQty ? ` ・ 自留 <b>${r.skQty}</b>${r.unit}` : ''}</div>
+            </div>
+            <div class="text-right shrink-0 tabular-nums">
+              <div class="text-[11px] text-emerald-700 font-bold">收 +${fmtMoney(r.rev)}</div>
+              <div class="text-[11px] text-rose-700 font-bold">支 -${fmtMoney(r.spend)}</div>
+            </div>
+          </div>
+        `).join('') : '<div class="text-center py-6 text-xs text-[#8C7A6B]">當日尚無商品紀錄</div>';
+      } else if (mode === 'month-rev') {
+        // 當月營業額點進去：商品名 + 售價 + 賣出幾個 = xxx
+        const [y, mo] = state.selectedMonth.split('-');
+        titleEl.textContent = `${y}年${parseInt(mo, 10)}月 營業額明細`;
+        formulaEl.innerHTML = `<div class="flex justify-between items-center font-bold"><span>當月總營業額（共 ${m.soldQty} 件）</span><span class="text-sky-700 text-sm tabular-nums">${fmtMoney(m.rev)}</span></div>`;
+        const byProd = new Map();
+        m.monthSales.forEach(s => {
+          const key = `${s.productName}__${s.unitPrice}`;
+          if (!byProd.has(key)) byProd.set(key, { name: s.productName, price: s.unitPrice, qty: 0, total: 0 });
+          const item = byProd.get(key);
+          item.qty += s.qty;
+          item.total += s.unitPrice * s.qty;
+        });
+        const list = Array.from(byProd.values());
+        bodyEl.innerHTML = list.length ? list.map(item => `
+          <div class="bg-white border border-[#E6DCCB] rounded-xl px-3 py-2.5 text-xs flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <div class="font-bold truncate">${item.name}</div>
+              <div class="text-[11px] text-[#8C7A6B] tabular-nums">售價 ${fmtMoney(item.price)} × 賣出 ${item.qty} 個</div>
+            </div>
+            <div class="font-bold text-sm text-sky-700 tabular-nums shrink-0">= ${fmtMoney(item.total)}</div>
+          </div>
+        `).join('') : '<div class="text-center py-6 text-xs text-[#8C7A6B]">本月尚無售出紀錄</div>';
+      } else if (mode === 'today-balance') {
+        titleEl.textContent = `當日結餘明細 (${activeDate})`;
+        formulaEl.innerHTML = `
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div><div class="text-[10px] text-[#8C7A6B]">當日營業額</div><div class="font-bold tabular-nums">${fmtMoney(t.rev)}</div></div>
+            <div><div class="text-[10px] text-[#8C7A6B]">當日支出</div><div class="font-bold text-rose-700 tabular-nums">-${fmtMoney(t.restockExpense)}</div></div>
+            <div><div class="text-[10px] text-[#8C7A6B]">當日結餘</div><div class="font-bold tabular-nums ${t.balance >= 0 ? 'text-emerald-700' : 'text-rose-700'}">${fmtMoney(t.balance)}</div></div>
+          </div>
+        `;
+        const todayRestocks = state.restocks.filter(r => r.restockTime.startsWith(activeDate));
+        const entries = [...t.todaySales.map(toSaleEntry), ...todayRestocks.map(toRestockEntry)]
+          .sort((a, b) => b.sortKey.localeCompare(a.sortKey));
+        bodyEl.innerHTML = renderLedgerRows(entries);
+      } else if (mode === 'month-balance') {
+        const [y, mo] = state.selectedMonth.split('-');
+        titleEl.textContent = `${y}年${parseInt(mo, 10)}月 結餘明細`;
+        formulaEl.innerHTML = `
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div><div class="text-[10px] text-[#8C7A6B]">當月營業額</div><div class="font-bold tabular-nums">${fmtMoney(m.rev)}</div></div>
+            <div><div class="text-[10px] text-[#8C7A6B]">當月支出</div><div class="font-bold text-rose-700 tabular-nums">-${fmtMoney(m.restockExpense)}</div></div>
+            <div><div class="text-[10px] text-[#8C7A6B]">當月結餘</div><div class="font-bold tabular-nums ${m.cashflow >= 0 ? 'text-emerald-700' : 'text-rose-700'}">${fmtMoney(m.cashflow)}</div></div>
+          </div>
+        `;
+        const entries = [...m.monthSales.map(toSaleEntry), ...m.monthRestocks.map(toRestockEntry)]
+          .sort((a, b) => b.sortKey.localeCompare(a.sortKey));
+        bodyEl.innerHTML = renderLedgerRows(entries);
+      } else if (mode === 'store-expense') {
+        titleEl.textContent = '本商店總支出明細';
+        formulaEl.innerHTML = `<div class="flex justify-between items-center font-bold"><span>累計所有進貨與成本支出</span><span class="text-rose-700 text-sm tabular-nums">-${fmtMoney(st.totalExpense)}</span></div>`;
+        const entries = state.restocks.map(toRestockEntry).sort((a, b) => b.sortKey.localeCompare(a.sortKey));
+        bodyEl.innerHTML = renderLedgerRows(entries);
+      } else if (mode === 'store-revenue') {
+        titleEl.textContent = '本商店總收益明細';
+        formulaEl.innerHTML = `<div class="flex justify-between items-center font-bold"><span>累計所有銷售營業額</span><span class="text-violet-800 text-sm tabular-nums">+${fmtMoney(st.totalRevenue)}</span></div>`;
+        const entries = state.sales.map(toSaleEntry).sort((a, b) => b.sortKey.localeCompare(a.sortKey));
+        bodyEl.innerHTML = renderLedgerRows(entries);
+      } else if (mode === 'store-balance') {
+        titleEl.textContent = '本店累積結餘明細';
+        formulaEl.innerHTML = `
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div><div class="text-[10px] text-[#8C7A6B]">本商店總收益</div><div class="font-bold text-violet-800 tabular-nums">${fmtMoney(st.totalRevenue)}</div></div>
+            <div><div class="text-[10px] text-[#8C7A6B]">本商店總支出</div><div class="font-bold text-rose-700 tabular-nums">-${fmtMoney(st.totalExpense)}</div></div>
+            <div><div class="text-[10px] text-[#8C7A6B]">本店累積結餘</div><div class="font-bold tabular-nums ${st.storeBalance >= 0 ? 'text-emerald-700' : 'text-rose-700'}">${fmtMoney(st.storeBalance)}</div></div>
+          </div>
+        `;
+        const entries = [...state.sales.map(toSaleEntry), ...state.restocks.map(toRestockEntry)]
+          .sort((a, b) => b.sortKey.localeCompare(a.sortKey));
+        bodyEl.innerHTML = renderLedgerRows(entries);
+      }
+
+      document.getElementById('kpi-detail-modal').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    document.addEventListener('click', e => {
+      const card = e.target.closest('[data-kpi-detail]');
+      if (card) {
+        openKpiDetailModal(card.dataset.kpiDetail);
+      }
+    });
+
+    document.getElementById('close-kpi-detail-modal').addEventListener('click', () => {
+      document.getElementById('kpi-detail-modal').classList.add('hidden');
+    });
+
+    document.getElementById('kpi-detail-body').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-kpi-del-id]');
+      if (!btn) return;
+      const type = btn.dataset.kpiDelType;
+      const id = btn.dataset.kpiDelId;
+      if (type === 'sale') {
+        const sale = state.sales.find(s => s.id === id);
+        if (sale) {
+          const prod = state.products.find(p => p.id === sale.productId);
+          if (prod) prod.stock += sale.qty;
+          state.sales = state.sales.filter(s => s.id !== id);
+        }
+      } else if (type === 'restock') {
+        const r = state.restocks.find(item => item.id === id);
+        if (r) {
+          const prod = state.products.find(p => p.id === r.productId);
+          if (prod) {
+            if (r.isSelfKeep || (r.note && r.note.includes('店主自留'))) prod.stock += r.qty;
+            else prod.stock = Math.max(0, prod.stock - r.qty);
+          }
+          state.restocks = state.restocks.filter(item => item.id !== id);
+        }
+      }
+      saveState();
+      renderAll();
+      if (currentKpiDetailMode) openKpiDetailModal(currentKpiDetailMode);
+      showToast('已刪除該筆紀錄並同步更新所有數字');
     });
 
     document.getElementById('open-restock-modal-btn').addEventListener('click', () => openRestockModal());
@@ -2524,8 +2871,14 @@
       const matched = state.products.find(p => p.name === name);
 
       if (type === 'sale') {
+        if (price <= 0) {
+          showToast('售出的單件售價不能為 $0 喔，請輸入金額！', 'warn');
+          return;
+        }
+        const sid = 's_' + Date.now();
+        if (matched) matched.stock = Math.max(0, matched.stock - qty);
         state.sales.unshift({
-          id: 's_' + Date.now(),
+          id: sid,
           productId: matched ? matched.id : '',
           productName: name,
           qty,
@@ -2533,10 +2886,12 @@
           unitPrice: price,
           saleTime: `${activeDate}T${nowTime}`
         });
+        pushActivity(activeDate, `手動補記售出「${name}」× ${qty}`, `+${fmtMoney(price * qty)}`, { kind: 'sale', id: sid, productId: matched ? matched.id : '', qty });
         showToast(`已手動補記今日售出「${name}」`);
       } else {
+        const rid = 'r_' + Date.now();
         state.restocks.unshift({
-          id: 'r_' + Date.now(),
+          id: rid,
           productId: matched ? matched.id : '',
           productName: name,
           qty,
@@ -2544,6 +2899,7 @@
           restockTime: `${activeDate}T${nowTime}`,
           note: '手動改帳'
         });
+        pushActivity(activeDate, `手動補記支出「${name}」× ${qty}`, `-${fmtMoney(cost * qty)}`, { kind: 'restock', id: rid, productId: matched ? matched.id : '', qty, isSelfKeep: true });
         showToast(`已手動補記今日支出「${name}」`);
       }
       saveState();
